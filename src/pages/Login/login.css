@@ -6,12 +6,13 @@
   justify-content: center;
   align-items: center;
   background-repeat: repeat;
+  background-size: contain;
 }
 .login-container {
   width: 60%;
   height: 80%;
   border-radius: 8px;
-  background-color: var(--brown);
+  
   display: flex;
   justify-content: center;
   align-content: center;
@@ -33,7 +34,7 @@
   height: 100%;
 }
 .login-left {
-  background-color: var(--brown-100);
+  background-color: var(--grey-100);
   display: flex;
   justify-content: space-between;
   align-items: center;

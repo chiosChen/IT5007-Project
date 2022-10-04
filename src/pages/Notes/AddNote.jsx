@@ -41,6 +41,7 @@ export default function AddNote({ close }) {
 			archived: false,
 			trashed: false,
 		});
+		close();
 	};
 	return (
 		<Dialog
@@ -242,7 +243,7 @@ export default function AddNote({ close }) {
 					</div>
 				</div>
 				<div className="form-group">
-					<Button text="Clear" type="reset" variant="outline" />
+					<Button text="Cancel" type="reset" variant="outline" />
 					<Button text="Save" type="submit" />
 				</div>
 			</form>

@@ -59,6 +59,7 @@ const GlobalContext = createContext({
 	deleteOneTask: () => {},
 	getSettings: () => {},
 	synchronize: () => {},
+	getCriticalTasks: () => {}
 });
 
 export default GlobalContext;

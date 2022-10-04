@@ -32,6 +32,7 @@ export default function AddEvent({ close }) {
 			type: "",
 			link: "",
 		});
+		close();
 	};
 	return (
 		<Dialog
@@ -90,13 +91,13 @@ export default function AddEvent({ close }) {
 				)}
 				<div className="form-group">
 					<Button
-						text="Clear"
+						text="Cancel"
 						type="reset"
 						variant="outline"
 						color={accentColor}
 					/>
 					<Button
-						text="Add Event"
+						text="Add"
 						type="submit"
 						color={accentColor}
 					/>

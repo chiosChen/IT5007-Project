@@ -17,6 +17,7 @@ export default function Header() {
 		toggleSideBar,
 		synchronize,
 		isLoading,
+		accentColor
 	} = useContext(GlobalContext);
 	const vh = window.innerHeight / 100;
 	const location = useLocation();
@@ -68,6 +69,7 @@ export default function Header() {
 					location.pathname === "/" && !openSideBar
 						? height
 						: "var(--head-height)",
+				
 			}}
 		>
 			<div className="header-left">
@@ -81,9 +83,8 @@ export default function Header() {
 						</MaterialIcons>
 					</button>
 				</div>
-				<img src="../../images/favicon.ico"/>
 				<Link to="/" className="header-left-logo">
-					Planner
+					<img src="../../images/favicon.svg"/>
 				</Link>
 			</div>
 			<div className="header-right">

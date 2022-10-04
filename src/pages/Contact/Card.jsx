@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { GitHub, Linkedin, Mail, Phone, Twitter } from "react-feather";
 import GlobalContext from "../../context/GlobalContext";
 
-export default function Card({ name, about, image, socials }) {
+export default function Card({ name, about, image, socials, color }) {
 	const getIcon = e => {
 		switch (e) {
 			case "github":
@@ -21,7 +21,7 @@ export default function Card({ name, about, image, socials }) {
 		<div
 			className="contact-card"
 			style={{
-				backgroundColor: `var(--${accentColor}-${
+				backgroundColor: `var(--${(color ? color : accentColor)}-${
 					theme === "light" ? 100 : 700
 				})`
 			}}

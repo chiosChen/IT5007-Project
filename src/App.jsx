@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import "./style.css";
-import { useLocation, useRoutes, Route, Routes, Outlet } from "react-router-dom";
-import {routes} from './routes'
+import { useLocation, Route, Routes } from "react-router-dom";
+import { Popup } from "./layout/Popup/Popup";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "./components/Header/Header";
@@ -29,6 +29,7 @@ import Settings from "./pages/Settings/Settings";
 import TasksCompleted from "./pages/Tasks/TasksCompleted";
 import TasksTrash from "./pages/Tasks/TasksTrash";
 import Tasks from "./pages/Tasks/Tasks"
+import { useState } from "react";
 
 const Wrapper = () => {
 	AOS.init();
@@ -37,6 +38,7 @@ const Wrapper = () => {
 		openSideBar,
 		setOpenSideBar,
 		isLoading,
+		setIsLoading,
 		snackMsg,
 		setSnackMsg,
 		showSnackBar,
@@ -45,10 +47,13 @@ const Wrapper = () => {
 		setNetworkStatus,
 		verifyUser,
 		setTheme,
-		synchronize
+		synchronize,
+		getCriticalTasks
 	} = useContext(GlobalContext);
+
 	const location = useLocation();
-	const myRoutes = useRoutes(routes);
+	const [haveCriticalTasks, setHaveCriticalTasks] = useState(false);
+
 	useEffect(() => {
 		setOpenSideBar(false);
 		document.body.classList = localStorage.getItem("theme");
@@ -114,6 +119,12 @@ const Wrapper = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect( () => {
+		if (getCriticalTasks() === true) setHaveCriticalTasks(true);
+	}, [])
+
+	
+
 	return (
 		<>
 			{location.pathname !== "/login" &&
@@ -176,6 +187,33 @@ const Wrapper = () => {
 					color={snackMsg.color}
 					close={() => setShowSnackBar(false)}
 				/>
+			)}
+			{haveCriticalTasks && (
+				<Popup
+					width="50%"
+					height="fit-content"
+					breakpoints={{
+						tab: ["60%", "fit-content"],
+						mobile: ["90%", "fit-content"],
+					}}
+					cta={{
+						text: "OK",
+						color: "red",
+						onClick: () => {
+							setHaveCriticalTasks( e => !e );
+						},
+					}}
+					close={() => setHaveCriticalTasks(false)}
+				>
+					<span style={{ fontSize: "1.25rem", lineHeight: "2.5rem", textAlign: "center" }}>
+						{
+							<>
+								<h3>REMINDER</h3> 
+								<h4>Your tasks are approaching their deadlines</h4>
+							</>
+						}
+					</span>
+				</Popup>
 			)}
 		</>
 	);

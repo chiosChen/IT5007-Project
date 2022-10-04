@@ -3,13 +3,14 @@ import favicon from "../images/favicon.svg";
 import userFallBackImg from "../images/user.svg";
 import peopleImg from "../images/people.svg";
 import registerBg from "../images/register-bg.jpg";
-import loginBg from "../images/login-bg.jpeg";
-import bricks from "../images/brick.svg";
+import loginBg from "../images/login-bg.jepg.png";
+import welcome from "../images/welcome.jpg";
+import homeCardImg from "../images/hbi.jpeg"
 
 import calendarPoster from "../images/posters/calendar-poster.jpg";
 import eventsPoster from "../images/posters/events-poster.jpg";
 import notesPoster from "../images/posters/notes-poster.jpg";
-import tasksPoster from "../images/posters/tasks-poster.webp";
+import tasksPoster from "../images/posters/tasks-poster.jpg";
 
 import calendar1 from "../images/calendar/1.png";
 import calendar2 from "../images/calendar/2.png";
@@ -83,7 +84,7 @@ export {
 	peopleImg,
 	registerBg,
 	loginBg,
-	bricks,
+	welcome,
 	waves,
 	calendarPoster,
 	eventsPoster,
@@ -100,4 +101,5 @@ export {
 	tourist,
 	blueSky,
 	IconMask,
+	homeCardImg
 };

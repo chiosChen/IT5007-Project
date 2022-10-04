@@ -18,6 +18,7 @@ export default function Contact() {
 						about={person.about}
 						image={person.image}
 						socials={person.socials}
+						color={person.color}
 					/>
 				))}
 			</section>

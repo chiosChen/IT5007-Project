@@ -34,7 +34,7 @@ export default function useGlobalContext() {
 	// Global Authentication State
 	const Authentification = localStorage.getItem("isAuthenticated");
 	
-	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || false);
+	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || true);
 
 	// Global User State
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
@@ -170,7 +170,7 @@ export default function useGlobalContext() {
 		}
 	};
 
-	const moveOneEventToBin = async (eid) => {
+	const moveOneEventToBin = async eid => {
 		try {
 			setIsLoading(true);
 			const res = await axiosIns.put(`/api/events/trash/${eid}`);//API
@@ -805,6 +805,18 @@ export default function useGlobalContext() {
 		}
 	};
 
+	const getCriticalTasks = async () => {
+		try {
+			setIsLoading(true);
+			const res = await axiosIns.get(`/api/tasks/criticalTasks`);
+			setIsLoading(false);
+			return res.data.message === "true" ? true : false ;
+		} catch (error) {
+			setIsLoading(false);
+			return false;
+		}
+	}
+
 	// Synchronize
 	const synchronize = async () => {
 		getAllEvents();
@@ -948,5 +960,6 @@ export default function useGlobalContext() {
 		deleteOneTask,
 		getSettings,
 		synchronize,
+		getCriticalTasks
 	};
 };

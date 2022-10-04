@@ -5,7 +5,7 @@ import { Input } from "../../components/Input/Input";
 import MaterialIcons from "../../components/MaterialIcons";
 import GlobalContext from "../../context/GlobalContext";
 import { Row, Col } from "../../layout/Responsive";
-import { bricks, registerBg } from "../../utils/images";
+import { registerBg, welcome } from "../../utils/images";
 import "./register.css";
 
 export default function Register() {
@@ -74,7 +74,7 @@ export default function Register() {
 		<section
 			className="register"
 			style={{
-				backgroundImage: `url(${bricks})`,
+				backgroundImage: `url(${welcome})`,
 			}}
 		>
 			<div className="register-container" data-aos="zoom-in">

@@ -5,7 +5,7 @@ import LinkButton from "../../components/Button/LinkButton";
 import modules from "../../modules";
 import { homeNavLinks } from "../../utils/navigation";
 import GlobalContext from "../../context/GlobalContext";
-import favicon, { peopleImg } from "../../utils/images";
+import favicon, { homeCardImg, peopleImg } from "../../utils/images";
 
 export default function Home() {
 
@@ -51,7 +51,7 @@ export default function Home() {
 							<div
 								className="home-box-image"
 								style={{
-									backgroundImage: `url(${peopleImg})`,
+									backgroundImage: `url("${homeCardImg}")`
 								}}
 							>
 								<img
@@ -60,7 +60,12 @@ export default function Home() {
 									alt="favicon"
 								/>
 							</div>
-							<div className="home-box-title">
+							<div 
+								className="home-box-title"
+								style={{
+									backgroundImage: `url("${peopleImg}")`
+								}}
+							>
 								<span className="home-box-title__text">
 									Planner
 								</span>

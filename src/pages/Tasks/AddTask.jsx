@@ -40,6 +40,7 @@ export default function AddTask({ close }) {
 			done: false,
 			trashed: false,
 		});
+		close();
 	};
 	return (
 		<Dialog
@@ -160,7 +161,7 @@ export default function AddTask({ close }) {
 				</div>
 				<div className="form-group">
 					<Button text="Cancel" type="reset" variant="outline" />
-					<Button text="Save Task" type="submit" />
+					<Button text="Save" type="submit" />
 				</div>
 			</form>
 		</Dialog>

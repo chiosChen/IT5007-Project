@@ -43,17 +43,16 @@
 .header-left-burger {
   margin: 1rem;
 }
-.header-left img {
-  width: 37px;
-  height: 37px;
-}
 .header-left-logo {
   position: absolute;
-  left: 7.6%;
-  top: 35%;
-  font-size: 1.75rem;
-  margin: 5px;
+  left: 4%;
 }
+
+.header-left-logo img {
+  width: 80px;
+  height: 100px;
+}
+
 .header-right {
   display: flex;
   justify-content: space-evenly;

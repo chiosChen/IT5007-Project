@@ -2,12 +2,13 @@
   width: 100vw;
   height: 100vh-var(--head-height);
   margin-top: var(--head-height);
-  background-size: cover;
+  background-size: contain;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: visible;
 }
 .contact-section {
   width: 100%;
@@ -23,7 +24,7 @@
   height: 15rem;
   margin: 2rem auto;
   border-radius: 32px;
-  background-color: var(--indigo-100);
+  background-color: var(--brown-100);
   border: 1px solid var(--back-shadow-light);
   display: flex;
   justify-content: center;

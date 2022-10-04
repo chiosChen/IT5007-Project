@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import GlobalContext from "../../context/GlobalContext";
 import MaterialIcons from "../../components/MaterialIcons";
 import { Input } from "../../components/Input/Input";
-import { bricks, loginBg } from "../../utils/images";
+import { loginBg, welcome } from "../../utils/images";
 
 export default function Login() {
 
@@ -78,7 +78,7 @@ export default function Login() {
 		<section
 			className="login"
 			style={{
-				backgroundImage: `url(${bricks})`,
+				backgroundImage: `url(${welcome})`,
 			}}
 		>
 			<div className="login-container" data-aos="zoom-in">
