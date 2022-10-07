@@ -131,7 +131,6 @@ export default function Calendar() {
 	}, []);
 
 	useEffect(() => {
-
 		getAllEvents();
 		let allEvents = [...events];
 		let today = moment(new Date()).format("YYYY-MM-DD");
@@ -141,7 +140,6 @@ export default function Calendar() {
 				break;
 			}
 		}
-	
 	}, []);
 
 	useEffect(() => {
