@@ -33,11 +33,13 @@
   font-size: 1.25rem;
   line-height: 1.75rem;
   margin: 0 0 0.5rem 0;
+  overflow: auto;
 }
 .note-content {
   width: 100%;
   max-height: 10rem;
-  overflow: hidden;
+  overflow: auto;
+  word-wrap: break-word;
 }
 .note-buttons {
   width: 100%;

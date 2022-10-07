@@ -13,7 +13,7 @@ import "./tasks.css";
 export default function Tasks() {
 
 	const [showAddTaskBox, setShowAddTaskBox] = useState(false);
-	const [tasksToRender, setTasksToRender] = useState([{title:"a",description:"badkfjgshjkafgsjdagfsajgbjadsgfjshdgfdshg",color:"bgcolor", date:new Date(), done:false,trashed:false}]);
+	const [tasksToRender, setTasksToRender] = useState([]);
 	const { setSideBarLinks, tasks, getAllTasks, isAuthenticated } = useContext(GlobalContext);
 
 	useEffect(() => {

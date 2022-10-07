@@ -73,6 +73,7 @@
   width: 70%;
   font-size: 1.5rem;
   line-height: 1.75rem;
+  overflow: auto;
 }
 .task-description {
   font-size: 0.9rem;
@@ -80,6 +81,7 @@
   margin: 0.5rem 0;
   max-height: 500px;
   overflow: auto;
+  word-wrap: break-word;
 }
 .task-deadline {
   font-size: 1.2rem;
