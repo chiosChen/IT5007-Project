@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import MaterialIcons from "../../components/MaterialIcons";
 import GlobalContext from "../../context/GlobalContext";
 import { Popup } from "../../layout/Popup/Popup";
-import { copy, imageBackgroundUrl, min } from "../../utils";
+import { copy, imageBackgroundUrl } from "../../utils";
 import NotePopup from "./NotePopup";
 
 export default function Note({ title, content, color, image, trashed, archived, ...rest }) {
@@ -14,9 +14,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 		restoreNoteFromTrash,
 		deleteNote,
 	} = useContext(GlobalContext);
-	let chipText = `${title?.slice(0, min(15, title.length))}${
-		title.length > 15 ? "..." : ""
-	}`;
+
 	const [openNotePopup, setOpenNotePopup] = useState(false);
 	const [openPopup, setOpenPopup] = useState(false);
 	const [popupCta, setPopupCta] = useState({
@@ -125,7 +123,6 @@ export default function Note({ title, content, color, image, trashed, archived, 
 									setPopupContent(() => (
 										<>
 											Archive Note?
-											
 										</>
 									));
 									setOpenNotePopup(false);

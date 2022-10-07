@@ -11,7 +11,7 @@ import moment from "moment";
 
 export default function Calendar() {
 
-	const { theme, events } = useContext(GlobalContext);
+	const { theme, events, getAllEvents } = useContext(GlobalContext);
 
 	const days = [
 		"Sunday",
@@ -131,16 +131,18 @@ export default function Calendar() {
 	}, []);
 
 	useEffect(() => {
+
+		getAllEvents();
 		let allEvents = [...events];
 		let today = moment(new Date()).format("YYYY-MM-DD");
 		for (let event of allEvents) {
-			if (!event.trashed && event.date === today) {
+			if (!event.trashed && moment(new Date(event.date)).format("YYYY-MM-DD") === today) {
 				setHaveEvent(true);
 				break;
 			}
 		}
-
-	}, [events]);
+	
+	}, []);
 
 	useEffect(() => {
 		setDatesToDisplay(handleDatesToDisplay(month, year));

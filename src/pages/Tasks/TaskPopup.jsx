@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useContext, useState } from "react";
 import Button from "../../components/Button/Button";
 import IconButton from "../../components/Button/IconButton";
@@ -80,12 +81,12 @@ export default function TaskPopup({
 					onChange={handleChange}
 				/>
 
-				{date !== "" && <Input
+				{date && <Input
 					name="date"
 					placeholder="Due Date"
 					icon="calendar_month"
 					type="date"
-					value={currTask.date}
+					value={moment(currTask.date).format("YYYY-MM-DD")}
 					onChange={handleChange}
 				/>}
 				

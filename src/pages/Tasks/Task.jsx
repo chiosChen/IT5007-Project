@@ -4,7 +4,6 @@ import MaterialIcons from "../../components/MaterialIcons";
 import GlobalContext from "../../context/GlobalContext";
 import TaskPopup from "./TaskPopup";
 import { Popup } from "../../layout/Popup/Popup";
-import { min } from "../../utils";
 import moment from 'moment'
 
 
@@ -26,9 +25,7 @@ export default function Task({
 		deleteOneTask,
 	} = useContext(GlobalContext);
 
-	let chipText = `${title?.slice(0, min(15, title.length))}${
-		title.length > 15 ? "..." : ""
-	}`;
+
 
 	const [openTaskPopup, setOpenTaskPopup] = useState(false);
 	const [openPopup, setOpenPopup] = useState(false);
@@ -54,7 +51,7 @@ export default function Task({
 		>
 			<div className="task-title">{title}</div>
 			<div className="task-description">{description}</div>
-			{date !== "" && <div className="task-deadline">{moment(date).format("YYYY-MMM-DD")}</div>}
+			{date && <div className="task-deadline">{moment(date).format("YYYY-MMM-DD")}</div>}
 			{!trashed && (
 				<button
 					className="icon task-control task-control-done"

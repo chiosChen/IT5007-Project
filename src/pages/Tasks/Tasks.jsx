@@ -13,7 +13,7 @@ import "./tasks.css";
 export default function Tasks() {
 
 	const [showAddTaskBox, setShowAddTaskBox] = useState(false);
-	const [tasksToRender, setTasksToRender] = useState([]);
+	const [tasksToRender, setTasksToRender] = useState([{title:"a",description:"badkfjgshjkafgsjdagfsajgbjadsgfjshdgfdshg",color:"bgcolor", date:new Date(), done:false,trashed:false}]);
 	const { setSideBarLinks, tasks, getAllTasks, isAuthenticated } = useContext(GlobalContext);
 
 	useEffect(() => {
@@ -27,7 +27,11 @@ export default function Tasks() {
 	useEffect(() => {
 		let allTasks = [...tasks];
 		let newTasks = allTasks.filter( e => !e.done && !e.trashed );
-		setTasksToRender(newTasks);
+		newTasks = newTasks.map( e => ({
+					...e,
+					date: new Date(e.date)
+				}));
+		//setTasksToRender(newTasks);
 	}, [tasks]);
 
 	return (
