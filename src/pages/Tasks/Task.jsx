@@ -53,7 +53,7 @@ export default function Task({
 		>
 			<div className="task-title">{title}</div>
 			<div className="task-description">{description}</div>
-			{date && <div className="task-deadline">{moment(date).format("YYYY-MMM-DD")}</div>}
+			{date && <div className="task-deadline">{moment(new Date(date)).format("YYYY-MMM-DD")}</div>}
 			{!trashed && (
 				<button
 					className="icon task-control task-control-done"

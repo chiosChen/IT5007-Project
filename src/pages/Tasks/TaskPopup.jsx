@@ -86,7 +86,7 @@ export default function TaskPopup({
 					placeholder="Due Date"
 					icon="calendar_month"
 					type="date"
-					value={moment(currTask.date).format("YYYY-MM-DD")}
+					value={moment(new Date(currTask.date)).format("YYYY-MM-DD")}
 					onChange={handleChange}
 				/>}
 				

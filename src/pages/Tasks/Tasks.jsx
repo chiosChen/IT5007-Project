@@ -27,11 +27,11 @@ export default function Tasks() {
 	useEffect(() => {
 		let allTasks = [...tasks];
 		let newTasks = allTasks.filter( e => !e.done && !e.trashed );
-		newTasks = newTasks.map( e => ({
-					...e,
-					date: new Date(e.date)
-				}));
-		//setTasksToRender(newTasks);
+		// newTasks = newTasks.map( e => ({
+		// 			...e,
+		// 			date: new Date(e.date)
+		// 		}));
+		setTasksToRender(newTasks);
 	}, [tasks]);
 
 	return (
@@ -44,7 +44,7 @@ export default function Tasks() {
 					<section className="tasks-body">
 						<div className="tasks-body-section">
 							<span className="tasks-body-section__head">
-								Don't stop! We are almost there!
+								Don't stop! You are almost there!
 							</span>
 							<div className="tasks-body-section__body">
 								<Masonry lg={4} md={3} sm={2}>
