@@ -5,9 +5,9 @@ import moment from "moment";
 import Empty from "../../components/Empty/Empty";
 import { Row, Col } from "../../layout/Responsive";
 import Event from "./Event";
-import { nullTrash } from "../../utils/images";
+import { nullEvents } from "../../utils/images";
 
-export default function EventsTrash() {
+export default function HistoricalEvents() {
 
 	const [eventsToRender, setEventsToRender] = useState([]);
 	const { setSideBarLinks, events, getAllEvents } = useContext(GlobalContext);
@@ -30,7 +30,7 @@ export default function EventsTrash() {
 		for (let event of newEvents) {
 			let presentDate = `${moment(event.date).format("MMMM YYYY")}`;
 			let a = map.get(presentDate);
-			if (event.trashed && !event.expired) {
+			if (event.expired) {
 				if (!a) map.set(presentDate, [event]);
 				else map.set(presentDate, [...a, event]);
 			}
@@ -53,7 +53,7 @@ export default function EventsTrash() {
 			{eventsToRender.length > 0 ? (
 				<>
 					<section className="events-head">
-						<span>Events</span>
+						<span>Historical Events</span>
 					</section>
 					<section className="events-body">
 						{eventsToRender?.map((element, index) => (
@@ -83,7 +83,7 @@ export default function EventsTrash() {
 				</>
 			) : (
 				<Empty
-					img={nullTrash}
+					img={nullEvents}
 					text={
 						<>
 							<h3
@@ -93,7 +93,7 @@ export default function EventsTrash() {
 									margin: "0 0 1rem 0",
 								}}
 							>
-								Bin is Empty
+								No historical events
 							</h3>
 							<span
 								style={{
@@ -101,8 +101,7 @@ export default function EventsTrash() {
 									lineHeight: "3rem",
 								}}
 							>
-								Items in bin will be deleted forever after 30
-								days
+								Expired events will be permanantly deleted after 30 days
 							</span>
 						</>
 					}

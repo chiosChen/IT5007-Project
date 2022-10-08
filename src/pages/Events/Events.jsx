@@ -31,14 +31,14 @@ export default function Events() {
 			.map( e => ({
 				...e,
 				date: new Date(e.date)
-			}));
-			// .sort((a, b) => a.date - b.date);
+			}))
+			.sort((a, b) => a.date - b.date);
 
 		let map = new Map();
 		for (let event of newEvents) {
 			let presentDate = `${moment(event.date).format("MMMM YYYY")}`;
 			let a = map.get(presentDate);
-			if (!event.trashed) {
+			if (!event.trashed && !event.expired) {
 				if (!a) map.set(presentDate, [event]);
 				else map.set(presentDate, [...a, event]);
 			}

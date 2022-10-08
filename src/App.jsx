@@ -30,6 +30,7 @@ import TasksCompleted from "./pages/Tasks/TasksCompleted";
 import TasksTrash from "./pages/Tasks/TasksTrash";
 import Tasks from "./pages/Tasks/Tasks"
 import { useState } from "react";
+import HistoricalEvents from "./pages/Events/HistoricalEvents";
 
 const Wrapper = () => {
 	AOS.init();
@@ -149,6 +150,10 @@ const Wrapper = () => {
 				<Route
 					path="/events/trash"
 					element={<EventsTrash />}
+				/>
+				<Route 
+					path="/events/history"
+					element={<HistoricalEvents />}
 				/>
 				<Route
 					path="/notes"
