@@ -10,6 +10,7 @@ export default function Event({
 	title,
 	description,
 	date,
+	time,
 	type,
 	link,
 	trashed,
@@ -92,18 +93,18 @@ export default function Event({
 					className="event-details__title"
 					onClick={() => setOpenEventPopup(true)}
 				>
-					{title}
+					{title || type}
 				</div>
 				<div
 					className="event-details__date"
 					onClick={() => setOpenEventPopup(true)}
 				>
-					{moment(date).format("YYYY-MMM-DD")}
+					{time ? `${moment(date).format("YYYY-MMM-DD")} ${time}` : `${moment(date).format("YYYY-MMM-DD")}`}
 				</div>
 				<div className="event-details__delete">
-					{trashed || expired ? (
+					{trashed ? (
 						<>
-							{!expired && <IconButton
+							<IconButton
 								icon="restore"
 								fill="var(--back-shadow-light)"
 								title="Restore Event"
@@ -125,7 +126,7 @@ export default function Event({
 									setOpenEventPopup(false);
 									setOpenTrashPopup(true);
 								}}
-							/>}
+							/>
 							<IconButton
 								icon="delete_forever"
 								fill="var(--back-shadow-light)"
@@ -183,6 +184,7 @@ export default function Event({
 					title={title}
 					description={description}
 					date={date}
+					time={time}
 					type={type}
 					link={link}
 					color={getColor(type)}

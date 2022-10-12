@@ -10,12 +10,13 @@ export default function EventPopup({
 	title,
 	description,
 	date,
+	time,
 	type,
 	link,
 	color,
 	...rest
 }) {
-	let originalEvent = { title, description, date, type, link };
+	let originalEvent = { title, description, date, time, type, link };
 
 	const { user, updateOneEvent } = useContext(GlobalContext);
 
@@ -25,6 +26,7 @@ export default function EventPopup({
 		title,
 		description,
 		date,
+		time,
 		type,
 		link
 	});
@@ -91,20 +93,6 @@ export default function EventPopup({
 						icon="calendar_month"
 						placeholder="Event Date"
 					/>
-				
-					{(currEvent.time !== "" || edit) && (
-			
-							<Input
-								name="time"
-								readOnly={!edit}
-								value={currEvent.time}
-								icon="schedule"
-								type="time"
-								placeholder="Event Time"
-								onChange={handleChange}
-							/>
-					
-					)}
 					<Select
 						name="type"
 						disabled={!edit}
@@ -113,17 +101,30 @@ export default function EventPopup({
 						placeholder="Event Type"
 						onChange={handleChange}
 					/>
+					{(currEvent.time !== "" &&  currEvent.type === "Meeting") && (
+						<Input
+							name="time"
+							readOnly={!edit}
+							value={currEvent.time}
+							icon="schedule"
+							type="time"
+							placeholder="Event Time"
+							onChange={handleChange}
+						/>
+					)}
 					{currEvent.type === "Meeting" &&
-						(currEvent?.link !== "" || edit) && 
+						currEvent?.link !== ""  && 
 							(edit ? 
-								(<Input
+								(
+								<Input
 									name="link"
 									type="url"
 									value={currEvent?.link}
 									icon="link"
 									placeholder="Event Link"
-									onChange={handleChange}
+									onChange={handleChange} 
 								/>
+								
 								) : 
 								(<a
 									href={currEvent?.link}

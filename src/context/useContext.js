@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { omit } from "../utils";
 import { homeNavLinks } from "../utils/navigation";
+import moment from "moment";
 
 // Custom hooks
 export default function useGlobalContext() {
@@ -35,6 +36,8 @@ export default function useGlobalContext() {
 	const Authentification = localStorage.getItem("isAuthenticated");
 	
 	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || true);
+
+	const [calendarDate, setCalendarDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
 	// Global User State
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
@@ -960,6 +963,8 @@ export default function useGlobalContext() {
 		deleteOneTask,
 		getSettings,
 		synchronize,
-		getCriticalTasks
+		getCriticalTasks,
+		calendarDate,
+		setCalendarDate
 	};
 };

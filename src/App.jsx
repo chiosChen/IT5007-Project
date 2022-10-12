@@ -151,10 +151,6 @@ const Wrapper = () => {
 					path="/events/trash"
 					element={<EventsTrash />}
 				/>
-				<Route 
-					path="/events/history"
-					element={<HistoricalEvents />}
-				/>
 				<Route
 					path="/notes"
 					element={<Notes />}

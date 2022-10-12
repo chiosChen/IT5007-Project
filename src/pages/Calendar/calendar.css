@@ -103,8 +103,13 @@
 
 .calendar-body table tbody td {
   font-size: 1.5rem;
+  flex-direction: column;
 }
-
+.calendar-td-dot {
+  font-size: 50px;
+  color: pink;
+  height: 0%;
+}
 .calendar-dialog-month {
   width: 13ch;
   height: 20rem;

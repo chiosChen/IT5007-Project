@@ -4,12 +4,13 @@ import { TextArea, Select, Input } from "../../components/Input/Input";
 import GlobalContext from "../../context/GlobalContext";
 import Dialog from "../../layout/Dialog/Dialog";
 
-export default function AddEvent({ close }) {
+export default function AddEvent({ close, date }) {
 	const { accentColor, addOneEvent } = useContext(GlobalContext);
 	const [newEvent, setNewEvent] = useState({
 		title: "",
 		description: "",
 		date: "",
+		time:"",
 		type: "",
 		link: ""
 	});
@@ -29,6 +30,7 @@ export default function AddEvent({ close }) {
 			title: "",
 			description: "",
 			date: "",
+			time:"",
 			type: "",
 			link: "",
 		});
@@ -69,7 +71,7 @@ export default function AddEvent({ close }) {
 					placeholder="Event Date"
 					type="date"
 					icon="calendar_month"
-					value={newEvent.date}
+					value={newEvent.date || date }
 					onChange={handleChange}
 				/>
 				
@@ -80,14 +82,23 @@ export default function AddEvent({ close }) {
 					onChange={handleChange}
 				/>
 				{newEvent.type === "Meeting" && (
-					<Input
-						name="link"
-						placeholder="Meeting Link"
-						type="url"
-						icon="link"
-						value={newEvent.link}
-						onChange={handleChange}
-					/>
+					<>
+						<Input 
+							name="time"
+							placeholder='Meeting time'
+							type="time"
+							icon="schedule"
+							value={newEvent.time}
+							onChange={handleChange}
+						/>
+						<Input
+							name="link"
+							placeholder="Meeting Link"
+							type="url"
+							icon="link"
+							value={newEvent.link}
+							onChange={handleChange} />
+					</>
 				)}
 				<div className="form-group">
 					<Button

@@ -30,7 +30,7 @@ export default function EventsTrash() {
 		for (let event of newEvents) {
 			let presentDate = `${moment(event.date).format("MMMM YYYY")}`;
 			let a = map.get(presentDate);
-			if (event.trashed && !event.expired) {
+			if (event.trashed) {
 				if (!a) map.set(presentDate, [event]);
 				else map.set(presentDate, [...a, event]);
 			}

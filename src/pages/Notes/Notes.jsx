@@ -47,7 +47,7 @@ export default function Notes() {
 			) : (
 				<Empty
 					img={nullNotes}
-					text="Try to discover things noteworthy"
+					text="Start Building Your Note Wall Now"
 					cta={{
 						text: "Add a note",
 						icon: "add",

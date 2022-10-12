@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import _ from "lodash";
 import "./calendar.css";
 import IconButton from "../../components/Button/IconButton";
@@ -11,7 +11,7 @@ import moment from "moment";
 
 export default function Calendar() {
 
-	const { theme, events, getAllEvents } = useContext(GlobalContext);
+	const { theme, events, getAllEvents, setCalendarDate } = useContext(GlobalContext);
 
 	const days = [
 		"Sunday",
@@ -57,11 +57,13 @@ export default function Calendar() {
 
 	const [month, setMonth] = useState(1);
 	const [year, setYear] = useState(2022);
-	const [haveEvents, setHaveEvent] = useState(false);
+	// const [haveEvents, setHaveEvent] = useState(false);
 
 	const [datesToDisplay, setDatesToDisplay] = useState(Array(35).fill(null));
 	const [rowsToDisplay, setRowsToDisplay] = useState([...Array(5).keys()]);
 	const colsToDisplay = [...Array(7).keys()];
+
+	const [eventDates, setEventDates] = useState(new Set());
 
 	let currentDate = parseInt(Date().substring(8, 10));
 	let currentMonth = new Date().getMonth() + 1;
@@ -87,7 +89,6 @@ export default function Calendar() {
 
 	const handleBackButton = e => {
 		e.preventDefault();
-		//let m = month, y = year;
 		if (month === 1) {
 			setMonth(12);
 			handleDatesToDisplay(12, year - 1);
@@ -100,7 +101,6 @@ export default function Calendar() {
 
 	const handleForwardButton = e => {
 		e.preventDefault();
-		//let m = month, y = year;
 		if (month === 12) {
 			setMonth(1);
 			handleDatesToDisplay(1, year + 1);
@@ -115,6 +115,14 @@ export default function Calendar() {
 		setYear( e.target.value );
 		handleDatesToDisplay(month, e.target.value);
 	};
+
+	const handleClick = e => {
+		const { value } = e.target.__reactProps$329k7j4hk;
+		console.log(value > 10);
+		let m = month < 10 ? `0${month}` : month;
+		let d = value < 10 ? `0${value}` : value;
+		setCalendarDate(year + '-' + m + '-' + d);
+	}
 
 	useEffect(() => {
 		document.title = "Calendar";
@@ -131,15 +139,21 @@ export default function Calendar() {
 	}, []);
 
 	useEffect(() => {
-		getAllEvents();
 		let allEvents = [...events];
-		let today = moment(new Date()).format("YYYY-MM-DD");
-		for (let event of allEvents) {
-			if (!event.trashed && moment(new Date(event.date)).format("YYYY-MM-DD") === today) {
-				setHaveEvent(true);
-				break;
+		let newEvents = allEvents
+			.map( e => ({
+				...e,
+				date: new Date(e.date),
+			}))
+		let set = new Set();
+		for (let event of newEvents) {
+			let presentDate = `${moment(event.date).format("YYYY-MM-DD")}`;
+			if (!event.trashed) {
+				set.add(presentDate);
 			}
 		}
+
+		setEventDates(set);
 	}, []);
 
 	useEffect(() => {
@@ -201,7 +215,7 @@ export default function Calendar() {
 					</div>
 				</div>
 				<div className="calendar-head-buttons">
-					{ haveEvents && <Link to="/events" className="calendar-head-buttons-link" >Don't Forget Your Appointments Today</Link>}
+					
 					<IconButton
 						icon="arrow_back"
 						fill={`var(--${colors[month-1]}-400)`}
@@ -245,7 +259,17 @@ export default function Calendar() {
 										}}
 										key={j}
 									>
-										{datesToDisplay[i * 7 + j]}
+										{
+											datesToDisplay[i * 7 + j] ? 
+												<>
+													{datesToDisplay[i * 7 + j]}
+													{eventDates.has(moment(new Date(`${year} ${month} ${datesToDisplay[i * 7 + j]}`)).format("YYYY-MM-DD")) && 
+													<Link className="calendar-td-dot" onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>.</Link>}
+												</>
+												: null
+												
+										}
+							
 									</td>
 								))}
 							</tr>

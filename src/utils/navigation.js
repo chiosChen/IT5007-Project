@@ -33,11 +33,6 @@ export const eventsNavLinks = [
 		icon: "delete",
 	},
 	{
-		title: "History",
-		route: "events/history",
-		icon: "history"
-	},
-	{
 		title: "Contact Us",
 		route: "/contact",
 		icon: "call",
