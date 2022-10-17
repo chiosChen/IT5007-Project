@@ -54,21 +54,19 @@ export default function Events() {
 			if (!event.trashed && presentDate === selectedDate) {
 				res = [
 					...res,
-					{
-						date: `${moment(event.date).format("MMM Do YY")}`,
-						evetnsOfDate: event
-					}
+					event
 				]
 			}
 		}
-		console.log(1);
+		
 		setEventsToRender(res);
 	}, [events, selectedDate]);
 
 	return (
 		<main className="events">
 			<section className="events-head">
-				<span>Events</span>
+				{moment(selectedDate).format("MMM Do YYYY")}
+				
 			</section>
 			<section className="events-calendar">
 				<Input
@@ -83,11 +81,13 @@ export default function Events() {
 			{eventsToRender.length > 0 ? (
 				<>
 					<section className="events-body">
-						{eventsToRender?.map((element, index) => (
-							<div className="events-body-section" key={index}>
+							<div className="events-body-section">
+								<span className="events-body-section__head">
+									Events
+								</span>
 								<div className="events-body-section__body">
 									<Row>
-										{element?.evetnsOfDate?.map(
+										{eventsToRender?.map(
 											(event, index) => (
 												<Col
 													lg={33}
@@ -102,7 +102,7 @@ export default function Events() {
 									</Row>
 								</div>
 							</div>
-						))}
+						
 					</section>
 				</>
 			) : (
