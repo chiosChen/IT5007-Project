@@ -310,23 +310,24 @@ export default function Note({ title, content, color, image, trashed, archived, 
 				<>
 					<div
 						className="note-color-overlay"
-						onClick={() => setOpenColorBox(false)}
+						// onClick={() => setOpenColorBox(false)}
 					></div>
 					<div className="note-color-update-box">
 						<Row>
-							{colors.map((thisColor, index) => (
+							{colors.map((color, index) => (
 								<Col lg={25} md={25} sm={33} key={index}>
 									<button
 										style={{
 											width: "2.5rem",
 											height: "2.5rem",
-											backgroundColor: `var(--${thisColor})`,
+											backgroundColor: `var(--${color})`,
 											borderRadius: "500px",
 											margin: "0.5rem",
 										}}
 										onClick={(e) => {
 											e.preventDefault();
-											updateNoteColor(thisColor);
+											updateNoteColor(color);
+											setOpenColorBox(false);
 										}}
 									></button>
 								</Col>
