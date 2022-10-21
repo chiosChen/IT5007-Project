@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import MaterialIcons from "../../components/MaterialIcons";
 import GlobalContext from "../../context/GlobalContext";
 import { Popup } from "../../layout/Popup/Popup";
-import { copy, imageBackgroundUrl } from "../../utils";
+import { copy, imageBackgroundUrl, colors } from "../../utils";
 import NotePopup from "./NotePopup";
+import { Row, Col } from "../../layout/Responsive";
 
-export default function Note({ title, content, color, image, trashed, archived, ...rest }) {
+export default function Note({ title, content, color, image, trashed, archived, pinned, ...rest }) {
 	const {
 		theme,
 		archiveOneNote,
@@ -13,9 +14,14 @@ export default function Note({ title, content, color, image, trashed, archived, 
 		moveOneNoteToBin,
 		recycleOneNote,
 		deleteOneNote,
+		updateOneNote,
+		pinNote,
+		unPinNote
 	} = useContext(GlobalContext);
 
 	const [openNotePopup, setOpenNotePopup] = useState(false);
+	const [noteColor, setNoteColor] = useState(color);
+	const [openColorBox, setOpenColorBox] = useState(false);
 	const [openPopup, setOpenPopup] = useState(false);
 	const [popupCta, setPopupCta] = useState({
 		text: "Move to Trash",
@@ -28,6 +34,16 @@ export default function Note({ title, content, color, image, trashed, archived, 
 			Trash Bin?
 		</>
 	);
+	const updateNoteColor = e => {
+		if (e !== color) {
+			let updatedNote = {};
+			//console.log(updatedNote);
+			updatedNote.color = e;
+			updateOneNote(rest._id, updatedNote);
+			setNoteColor(e);
+			setOpenColorBox(false);
+		}
+	};
 	const handleCopy = (e) => {
 		e?.preventDefault();
 		let ans = `${title} \n${content}\n`;
@@ -35,6 +51,9 @@ export default function Note({ title, content, color, image, trashed, archived, 
 		if (trashed) ans += " \nNote: This Note is in owner's bin";
 		copy(ans);
 	};
+	const handlePin = () => {
+		pinNote(rest._id);
+	}
 	return (
 		<div
 			className="note"
@@ -47,7 +66,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 				backgroundColor:
 					image >= 0 && image < 24
 						? "rgba(255,255,255,0.65)"
-						: `var(--${color}-${
+						: `var(--${noteColor}-${
 								theme === "light" ? "100" : "700"
 						  })`,
 			}}
@@ -65,6 +84,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 				{!trashed ? (
 					<>
 						<button
+							onClick={() => setOpenColorBox(e => !e)}
 							className="note-button"
 							title="Background Color"
 						>
@@ -77,9 +97,57 @@ export default function Note({ title, content, color, image, trashed, archived, 
 						>
 							<MaterialIcons>content_copy</MaterialIcons>
 						</button>
-						{/* <button className="note-button" title="Add to list">
-							<MaterialIcons>playlist_add</MaterialIcons>
-						</button> */}
+						{pinned ? (
+							<button
+								className="note-button"
+								title="Unpin Note"
+								onClick={() => {
+									setPopupCta(() => ({
+										text: "Unpin Note",
+										color: "red",
+										icon: "push_pin",
+										onClick: () => {
+											unPinNote(rest._id);
+											setOpenPopup(false);
+										},
+									}));
+									setPopupContent(() => (
+										<>
+											Unpin Note?
+										</>
+									));
+									setOpenNotePopup(false);
+									setOpenPopup(true);
+								}}
+							>
+								<MaterialIcons>push_pin</MaterialIcons>
+							</button>
+						) : (
+							<button
+								className="note-button"
+								title="Pin Note"
+								onClick={() => {
+									setPopupCta(() => ({
+										text: "Pin Note",
+										color: "green",
+										icon: "push_pin",
+										onClick: () => {
+											pinNote(rest._id);
+											setOpenPopup(false);
+										},
+									}));
+									setPopupContent(() => (
+										<>
+											Pin Note?
+										</>
+									));
+									setOpenNotePopup(false);
+									setOpenPopup(true);
+								}}
+							>
+								<MaterialIcons>push_pin</MaterialIcons>
+							</button>
+						)}
 						{archived ? (
 							<button
 								className="note-button"
@@ -87,7 +155,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 								onClick={() => {
 									setPopupCta(() => ({
 										text: "Unarchive Note",
-										color: "green",
+										color: "red",
 										icon: "unarchive",
 										onClick: () => {
 											unArchiveOneNote(rest._id);
@@ -96,7 +164,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 									}));
 									setPopupContent(() => (
 										<>
-											Ubarchive Note?
+											Unarchive Note?
 										</>
 									));
 									setOpenNotePopup(false);
@@ -237,6 +305,35 @@ export default function Note({ title, content, color, image, trashed, archived, 
 						{popupContent}
 					</span>
 				</Popup>
+			)}
+			{openColorBox && (
+				<>
+					<div
+						className="note-color-overlay"
+						onClick={() => setOpenColorBox(false)}
+					></div>
+					<div className="note-color-update-box">
+						<Row>
+							{colors.map((thisColor, index) => (
+								<Col lg={25} md={25} sm={33} key={index}>
+									<button
+										style={{
+											width: "2.5rem",
+											height: "2.5rem",
+											backgroundColor: `var(--${thisColor})`,
+											borderRadius: "500px",
+											margin: "0.5rem",
+										}}
+										onClick={(e) => {
+											e.preventDefault();
+											updateNoteColor(thisColor);
+										}}
+									></button>
+								</Col>
+							))}
+						</Row>
+					</div>
+				</>
 			)}
 		</div>
 	);

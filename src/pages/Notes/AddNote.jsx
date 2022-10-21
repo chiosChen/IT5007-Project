@@ -19,6 +19,7 @@ export default function AddNote({ close }) {
 		image: -1,
 		archived: false,
 		trashed: false,
+		pinned: false
 	});
 	const [openColorBox, setOpenColorBox] = useState(false);
 	const [openImageBox, setOpenImageBox] = useState(false);
@@ -40,6 +41,7 @@ export default function AddNote({ close }) {
 			image: -1,
 			archived: false,
 			trashed: false,
+			pinned: false
 		});
 		close();
 	};

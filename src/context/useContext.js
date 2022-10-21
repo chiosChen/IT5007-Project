@@ -276,7 +276,75 @@ export default function useGlobalContext() {
 
 	// Notes
 	// Similar APIs as Events
-	const [notes, setNotes] = useState([]);
+	const [notes, setNotes] = useState([{title:'a', color:'red'}]);
+
+	const pinNote = async nid => {
+		try {
+			setIsLoading(true);
+			const res = await axiosIns.put(`/api/notes/pin/${nid}`);
+			setNotes( prev => {
+				let newNotes = prev.map((e) =>
+					e._id !== nid ? e : res.data.updatedNote
+				);
+				return newNotes;
+			});
+			setSnackMsg({
+				text: res.data.message,
+				bgColor: 'var(--green)',
+				color: 'var(--white)'
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 3000);
+			setIsLoading(false);
+		} catch (error) {
+			setSnackMsg({
+				text: error.response?.data?.message,
+				bgColor: 'var(--red)',
+				color: 'var(--white)',
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 3000);
+			setIsLoading(false);
+		}
+	};
+
+	const unPinNote = async nid => {
+		try {
+			setIsLoading(true);
+			const res = await axiosIns.put(`/api/notes/unpin/${nid}`);
+			setNotes( prev => {
+				let newNotes = prev.map((e) =>
+					e._id !== nid ? e : res.data.updatedNote
+				);
+				return newNotes;
+			});
+			setSnackMsg({
+				text: res.data.message,
+				bgColor: 'var(--green)',
+				color: 'var(--white)'
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 3000);
+			setIsLoading(false);
+		} catch (error) {
+			setSnackMsg({
+				text: error.response?.data?.message,
+				bgColor: 'var(--red)',
+				color: 'var(--white)',
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 3000);
+			setIsLoading(false);
+		}
+	};
 
 	const getAllNotes = async () => {
 		try {
@@ -950,6 +1018,8 @@ export default function useGlobalContext() {
 		moveOneNoteToBin,
 		recycleOneNote,
 		deleteOneNote,
+		pinNote,
+		unPinNote,
 		//Tasks
 		tasks,
 		setTasks,

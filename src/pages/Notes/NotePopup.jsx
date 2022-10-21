@@ -16,6 +16,7 @@ export default function NotePopup({
 	image,
 	archived,
 	trashed,
+	pinned,
 	...rest
 }) {
 	const { user, updateOneNote } = useContext(GlobalContext);
@@ -25,7 +26,7 @@ export default function NotePopup({
 		content,
 		color,
 		image,
-		archived,
+		archived
 	});
 	const notesBackgrounds = Array(24).fill(null);
 	const [openColorBox, setOpenColorBox] = useState(false);
@@ -96,6 +97,7 @@ export default function NotePopup({
 								<IconButton
 									fill={`var(--${currNote.color}-400)`}
 									icon="palette"
+									title='Colorbox'
 									onClick={(e) => {
 										e.preventDefault();
 										setOpenColorBox(true);
@@ -151,6 +153,7 @@ export default function NotePopup({
 								<IconButton
 									fill={`var(--${currNote.color}-400)`}
 									icon="image"
+									title='Image Box'
 									onClick={(e) => {
 										e.preventDefault();
 										setOpenImageBox(true);
@@ -252,6 +255,7 @@ export default function NotePopup({
 											: "transparent"
 									}
 									icon="archive"
+									title={archived?'Unarchive':'Archive'}
 									onClick={(e) => {
 										e.preventDefault();
 										setCurrNote( cur => ({

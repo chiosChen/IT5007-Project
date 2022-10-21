@@ -47,6 +47,8 @@ const GlobalContext = createContext({
 	moveOneNoteToBin: () => {},
 	recycleOneNote: () => {},
 	deleteOneNote: () => {},
+	pinNote: () => {},
+	unPinNote: () => {},
 	tasks: [],
 	setTasks: () => {},
 	getAllTasks: () => {},
