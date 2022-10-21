@@ -139,6 +139,7 @@ export default function Calendar() {
 	}, []);
 
 	useEffect(() => {
+		getAllEvents();
 		let allEvents = [...events];
 		let newEvents = allEvents
 			.map( e => ({
@@ -264,7 +265,7 @@ export default function Calendar() {
 												<>
 													{datesToDisplay[i * 7 + j]}
 													{eventDates.has(moment(new Date(`${year} ${month} ${datesToDisplay[i * 7 + j]}`)).format("YYYY-MM-DD")) && 
-													<Link className="calendar-td-dot" onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>.</Link>}
+													<Link className="calendar-td-dot" target={'_self'} onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>.</Link>}
 												</>
 												: null
 												

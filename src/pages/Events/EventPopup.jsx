@@ -31,6 +31,15 @@ export default function EventPopup({
 		link
 	});
 
+	const getOptions = () => {
+		let res = [type];
+		let ops = ['Appointment', 'Party', 'Meeting', 'Festival', 'Birthday', 'Dating', 'Other'];
+		for (let i of ops) {
+			if (i != type) res.push(i);
+		}
+		return res;
+	}
+
 	const handleChange = e => {
 		const { name, value } = e.target;
 		setCurrEvent( cur => ({ ...cur, [name]: value }));
@@ -96,12 +105,12 @@ export default function EventPopup({
 					<Select
 						name="type"
 						disabled={!edit}
-						value={currEvent.type}
+						options={getOptions()}
 						icon="event"
 						placeholder="Event Type"
 						onChange={handleChange}
 					/>
-					{(currEvent.time !== "" &&  currEvent.type === "Meeting") && (
+					{(currEvent.time &&  currEvent.type === "Meeting") && (
 						<Input
 							name="time"
 							readOnly={!edit}
@@ -112,8 +121,7 @@ export default function EventPopup({
 							onChange={handleChange}
 						/>
 					)}
-					{currEvent.type === "Meeting" &&
-						currEvent?.link !== ""  && 
+					{currEvent.type === "Meeting"  && 
 							(edit ? 
 								(
 								<Input

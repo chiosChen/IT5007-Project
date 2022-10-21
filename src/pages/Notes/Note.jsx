@@ -8,11 +8,11 @@ import NotePopup from "./NotePopup";
 export default function Note({ title, content, color, image, trashed, archived, ...rest }) {
 	const {
 		theme,
-		archiveNote,
-		unArchiveNote,
-		moveNoteToTrash,
-		restoreNoteFromTrash,
-		deleteNote,
+		archiveOneNote,
+		unArchiveOneNote,
+		moveOneNoteToBin,
+		recycleOneNote,
+		deleteOneNote,
 	} = useContext(GlobalContext);
 
 	const [openNotePopup, setOpenNotePopup] = useState(false);
@@ -77,9 +77,9 @@ export default function Note({ title, content, color, image, trashed, archived, 
 						>
 							<MaterialIcons>content_copy</MaterialIcons>
 						</button>
-						<button className="note-button" title="Add to list">
+						{/* <button className="note-button" title="Add to list">
 							<MaterialIcons>playlist_add</MaterialIcons>
-						</button>
+						</button> */}
 						{archived ? (
 							<button
 								className="note-button"
@@ -90,14 +90,13 @@ export default function Note({ title, content, color, image, trashed, archived, 
 										color: "green",
 										icon: "unarchive",
 										onClick: () => {
-											unArchiveNote(rest._id);
+											unArchiveOneNote(rest._id);
 											setOpenPopup(false);
 										},
 									}));
 									setPopupContent(() => (
 										<>
-											Archive Note?
-											
+											Ubarchive Note?
 										</>
 									));
 									setOpenNotePopup(false);
@@ -116,7 +115,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 										color: "green",
 										icon: "archive",
 										onClick: () => {
-											archiveNote(rest._id);
+											archiveOneNote(rest._id);
 											setOpenPopup(false);
 										},
 									}));
@@ -141,7 +140,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 									color: "red",
 									icon: "delete",
 									onClick: () => {
-										moveNoteToTrash(rest._id);
+										moveOneNoteToBin(rest._id);
 										setOpenPopup(false);
 									},
 								}));
@@ -168,7 +167,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 									color: "green",
 									icon: "restore",
 									onClick: () => {
-										restoreNoteFromTrash(rest._id);
+										recycleOneNote(rest._id);
 										setOpenPopup(false);
 									},
 								}));
@@ -193,7 +192,7 @@ export default function Note({ title, content, color, image, trashed, archived, 
 									color: "red",
 									icon: "delete",
 									onClick: () => {
-										deleteNote(rest._id);
+										deleteOneNote(rest._id);
 										setOpenPopup(false);
 									},
 								}));

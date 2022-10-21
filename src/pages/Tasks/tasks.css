@@ -62,6 +62,7 @@
   overflow: hidden;
   padding: 1rem;
   margin: 1rem;
+
 }
 @media (max-width: 672px) {
   .task {

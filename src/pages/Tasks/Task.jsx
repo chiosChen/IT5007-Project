@@ -47,8 +47,7 @@ export default function Task({
 				backgroundColor: `var(--${color}-${
 					theme === "light" ? "100" : "700"
 				})`,
-				borderStyle: `${moment(date).format("YYYY-MMM-DD")===moment(new Date()).format("YYYY-MMM-DD") && !done && !trashed ? "solid":"none"}`,
-				borderColor: `${moment(date).format("YYYY-MMM-DD")===moment(new Date()).format("YYYY-MMM-DD") && !done && !trashed ? "red":""}`
+				// borderColor: `${moment(date).format("YYYY-MMM-DD")===moment(new Date()).format("YYYY-MMM-DD") && !done && !trashed && date? "red":"black"}`
 			}}
 		>
 			<div className="task-title">{title}</div>
