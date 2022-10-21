@@ -35,7 +35,7 @@ export default function useGlobalContext() {
 	// Global Authentication State
 	const Authentification = localStorage.getItem("isAuthenticated");
 	
-	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || true);
+	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || false);
 
 	const [calendarDate, setCalendarDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
@@ -276,7 +276,7 @@ export default function useGlobalContext() {
 
 	// Notes
 	// Similar APIs as Events
-	const [notes, setNotes] = useState([{title:'a', color:'red'}]);
+	const [notes, setNotes] = useState([]);
 
 	const pinNote = async nid => {
 		try {
