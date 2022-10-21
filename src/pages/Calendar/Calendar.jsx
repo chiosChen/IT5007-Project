@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 import "./calendar.css";
 import IconButton from "../../components/Button/IconButton";
@@ -117,8 +117,7 @@ export default function Calendar() {
 	};
 
 	const handleClick = e => {
-		const { value } = e.target.__reactProps$329k7j4hk;
-		console.log(value > 10);
+		const value  = e.target.innerHTML;
 		let m = month < 10 ? `0${month}` : month;
 		let d = value < 10 ? `0${value}` : value;
 		setCalendarDate(year + '-' + m + '-' + d);
@@ -238,7 +237,7 @@ export default function Calendar() {
 						style={{
 							backgroundColor: `var(--${colors[month-1]}-${
 								theme === "light" ? "100" : "700"
-							})`,
+							})`
 						}}
 					>
 						<tr>
@@ -263,9 +262,9 @@ export default function Calendar() {
 										{
 											datesToDisplay[i * 7 + j] ? 
 												<>
-													{datesToDisplay[i * 7 + j]}
-													{eventDates.has(moment(new Date(`${year} ${month} ${datesToDisplay[i * 7 + j]}`)).format("YYYY-MM-DD")) && 
-													<Link className="calendar-td-dot" target={'_self'} onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>.</Link>}
+													{/* {datesToDisplay[i * 7 + j]}
+													{eventDates.has(moment(new Date(`${year} ${month} ${datesToDisplay[i * 7 + j]}`)).format("YYYY-MM-DD")) &&  */}
+													<Link target={'_self'} onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>{datesToDisplay[i * 7 + j]}</Link>
 												</>
 												: null
 												

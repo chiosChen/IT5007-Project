@@ -81,7 +81,7 @@ export default function useGlobalContext() {
 
 
 	// Events
-	const [events, setEvents] = useState([]);
+	const [events, setEvents] = useState([{date:'2022-10-21'}]);
 
 	const getAllEvents = async () => {
 		try {
