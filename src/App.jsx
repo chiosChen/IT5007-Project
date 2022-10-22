@@ -30,6 +30,7 @@ import TasksCompleted from "./pages/Tasks/TasksCompleted";
 import TasksTrash from "./pages/Tasks/TasksTrash";
 import Tasks from "./pages/Tasks/Tasks"
 import { useState } from "react";
+import moment from "moment";
 
 const Wrapper = () => {
 	AOS.init();
@@ -48,7 +49,8 @@ const Wrapper = () => {
 		verifyUser,
 		setTheme,
 		synchronize,
-		getCriticalTasks
+		getCriticalTasks,
+		events
 	} = useContext(GlobalContext);
 
 	const location = useLocation();
@@ -81,6 +83,48 @@ const Wrapper = () => {
 		}
 	});
 
+	useEffect(() => {
+		let allEvents = [...events];
+		let times = [];
+		let curr = new Date().getTime();
+		let today = moment(new Date()).format("YYYY-MM-DD");
+		for (let event of allEvents) {
+			if (event.date === today) {
+				let tmp = new Date(`${event.date} ${event.time}`).getTime();
+				if (tmp - curr >= 300000) {
+					times = [...times, tmp - curr];
+				}
+			}
+		}
+		for (let t of times) {
+			if (t >= 900000) {
+				setTimeout(() => {
+					setSnackMsg({
+						text: `You have an event in 15 mins`,
+						bgColor: "var(--red)",
+						color: "var(--white)",
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 5000);
+				}, t-900000);
+			}else {
+				setTimeout(() => {
+					setSnackMsg({
+						text: `You have an event in 5 mins`,
+						bgColor: "var(--red)",
+						color: "var(--white)",
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 5000);
+				}, t-300000);
+			}
+			
+		}
+	}, [events])
 	useEffect(() => {
 		if (!navigator.onLine) {
 			setSnackMsg({
@@ -122,6 +166,8 @@ const Wrapper = () => {
 	useEffect( () => {
 		if (getCriticalTasks() === true) setHaveCriticalTasks(true);
 	}, [])
+
+	
 
 	
 
@@ -208,8 +254,7 @@ const Wrapper = () => {
 					<span style={{ fontSize: "1.25rem", lineHeight: "2.5rem", textAlign: "center" }}>
 						{
 							<>
-								<h3>REMINDER</h3> 
-								<h4>Your tasks are approaching their deadlines</h4>
+								<h4>Your tasks are approaching deadlines</h4>
 							</>
 						}
 					</span>

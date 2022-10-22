@@ -35,7 +35,7 @@ export default function useGlobalContext() {
 	// Global Authentication State
 	const Authentification = localStorage.getItem("isAuthenticated");
 	
-	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || false);
+	const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(Authentification) || true);
 
 	const [calendarDate, setCalendarDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
@@ -81,7 +81,8 @@ export default function useGlobalContext() {
 
 
 	// Events
-	const [events, setEvents] = useState([{date:'2022-10-21'}]);
+	const [events, setEvents] = useState([
+	]);
 
 	const getAllEvents = async () => {
 		try {

@@ -41,17 +41,17 @@ export default function Events() {
 
 	useEffect(() => {
 		let allEvents = [...events];
-		let newEvents = allEvents
-			.map( e => ({
-				...e,
-				date: new Date(e.date)
-			}));
+		// let newEvents = allEvents
+		// 	.map( e => ({
+		// 		...e,
+		// 		date: new Date(e.date)
+		// 	}));
 			
 
 		let res = [];
-		for (let event of newEvents) {
-			let presentDate = `${moment(event.date).format("YYYY-MM-DD")}`;
-			if (!event.trashed && presentDate === selectedDate) {
+		for (let event of allEvents) {
+			
+			if (!event.trashed && event.date === selectedDate) {
 				res = [
 					...res,
 					event

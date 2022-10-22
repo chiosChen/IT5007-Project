@@ -3,9 +3,11 @@ import Button from "../../components/Button/Button";
 import { TextArea, Select, Input } from "../../components/Input/Input";
 import GlobalContext from "../../context/GlobalContext";
 import Dialog from "../../layout/Dialog/Dialog";
+import Switch from "../../components/Input/Switch";
 
 export default function AddEvent({ close, date }) {
 	const { accentColor, addOneEvent } = useContext(GlobalContext);
+	const [remindMe, setRemindMe] = useState(false);
 	const [newEvent, setNewEvent] = useState({
 		title: "",
 		description: "",
@@ -17,7 +19,7 @@ export default function AddEvent({ close, date }) {
 	const handleChange = e => {
 		const { name, value } = e.target;
 		setNewEvent( cur => ({ ...cur, [name]: value }));
-		console.log(value);
+
 	};
 	const handleSubmit = async e => {
 		e?.preventDefault();
@@ -50,7 +52,7 @@ export default function AddEvent({ close, date }) {
 			>
 				<Input
 					name="title"
-					placeholder="Event Title"
+					placeholder="Add a title"
 					icon="edit"
 					type="text"
 					autoFocus
@@ -59,13 +61,12 @@ export default function AddEvent({ close, date }) {
 				/>
 				<TextArea
 					name="description"
-					placeholder="Event Description"
+					placeholder="Add a description"
 					icon="notes"
 					rows={5}
 					value={newEvent.description}
 					onChange={handleChange}
 				/>
-					
 				<Input
 					name="date"
 					placeholder="Event Date"
@@ -74,7 +75,14 @@ export default function AddEvent({ close, date }) {
 					value={newEvent.date || date }
 					onChange={handleChange}
 				/>
-				
+				<Input 
+					name="time"
+					placeholder='Meeting time'
+					type="time"
+					icon="schedule"
+					value={newEvent.time}
+					onChange={handleChange}
+				/>
 				<Select
 					name='type'
 					icon='event'
@@ -83,14 +91,7 @@ export default function AddEvent({ close, date }) {
 				/>
 				{newEvent.type === "Meeting" && (
 					<>
-						<Input 
-							name="time"
-							placeholder='Meeting time'
-							type="time"
-							icon="schedule"
-							value={newEvent.time}
-							onChange={handleChange}
-						/>
+						
 						<Input
 							name="link"
 							placeholder="Meeting Link"

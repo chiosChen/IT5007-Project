@@ -57,13 +57,13 @@ export default function Calendar() {
 
 	const [month, setMonth] = useState(1);
 	const [year, setYear] = useState(2022);
-	// const [haveEvents, setHaveEvent] = useState(false);
+
 
 	const [datesToDisplay, setDatesToDisplay] = useState(Array(35).fill(null));
 	const [rowsToDisplay, setRowsToDisplay] = useState([...Array(5).keys()]);
 	const colsToDisplay = [...Array(7).keys()];
 
-	const [eventDates, setEventDates] = useState(new Set());
+
 
 	let currentDate = parseInt(Date().substring(8, 10));
 	let currentMonth = new Date().getMonth() + 1;
@@ -137,24 +137,24 @@ export default function Calendar() {
 		);
 	}, []);
 
-	useEffect(() => {
-		getAllEvents();
-		let allEvents = [...events];
-		let newEvents = allEvents
-			.map( e => ({
-				...e,
-				date: new Date(e.date),
-			}))
-		let set = new Set();
-		for (let event of newEvents) {
-			let presentDate = `${moment(event.date).format("YYYY-MM-DD")}`;
-			if (!event.trashed) {
-				set.add(presentDate);
-			}
-		}
+	// useEffect(() => {
+	// 	getAllEvents();
+	// 	let allEvents = [...events];
+	// 	let newEvents = allEvents
+	// 		.map( e => ({
+	// 			...e,
+	// 			date: new Date(e.date),
+	// 		}))
+	// 	let set = new Set();
+	// 	for (let event of newEvents) {
+	// 		let presentDate = `${moment(event.date).format("YYYY-MM-DD")}`;
+	// 		if (!event.trashed) {
+	// 			set.add(presentDate);
+	// 		}
+	// 	}
 
-		setEventDates(set);
-	}, []);
+	// 	setEventDates(set);
+	// }, []);
 
 	useEffect(() => {
 		setDatesToDisplay(handleDatesToDisplay(month, year));
@@ -262,9 +262,9 @@ export default function Calendar() {
 										{
 											datesToDisplay[i * 7 + j] ? 
 												<>
-													{/* {datesToDisplay[i * 7 + j]}
-													{eventDates.has(moment(new Date(`${year} ${month} ${datesToDisplay[i * 7 + j]}`)).format("YYYY-MM-DD")) &&  */}
+												
 													<Link target={'_self'} onClick={handleClick} to='/events' value={datesToDisplay[i * 7 + j]}>{datesToDisplay[i * 7 + j]}</Link>
+													
 												</>
 												: null
 												
