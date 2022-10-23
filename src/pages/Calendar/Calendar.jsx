@@ -200,10 +200,10 @@ export default function Calendar() {
 					</div>
 				</div>
 				{gapiurl &&
-				<button
-					className="calendar-integrate-button"
-					onClick={() => {window.open(`${gapiurl}`, '_blank', "width=500,height=650,top=100,left=800,toolbar=no,menubar=no,location=no,status=no")}}
-				>Add a google calendar</button>
+							<button
+							className="calendar-integrate-button"
+							onClick={() => {window.open(`${gapiurl}`, '_blank', "width=500,height=650,top=100,left=800,toolbar=no,menubar=no,location=no,status=no")}}
+							>Conect to your google calendar</button>
 				}
 				<div className="calendar-head-buttons">
 					

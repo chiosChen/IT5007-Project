@@ -8,7 +8,7 @@ import {
 const modules = [
 	{
 		title: "Calendar",
-		about: "Keep a track of your daily life with a Y-3 calendar. It helps to arrange your schedule",
+		about: "Keep a track of your daily life with a calendar. It can be integrated with your google calendar",
 		route: "/calendar",
 		poster: calendarPoster,
 		color: "green",

@@ -888,7 +888,7 @@ export default function useGlobalContext() {
 		}
 	}
 
-	const [gapiurl, setGapiurl] = useState("");
+	const [gapiurl, setGapiurl] = useState("d");
 
 	const getGapiUrl = async () => {
 		try {
