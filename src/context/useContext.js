@@ -888,7 +888,7 @@ export default function useGlobalContext() {
 		}
 	}
 
-	const [gapiurl, setGapiurl] = useState("https://leetcode.com/problemset/all/");
+	const [gapiurl, setGapiurl] = useState("");
 
 	const getGapiUrl = async () => {
 		try {
