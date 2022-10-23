@@ -166,5 +166,13 @@
 .calendar-dialog-month button:hover {
   background-color: var(--bgcolor-100);
 }
-
+.calendar-integrate-button {
+  width: 20%;
+  font-size: large;
+  position: relative;
+  border-style: solid;
+  border-radius: 2rem;
+  background-color: lightskyblue;
+  border-color: rgb(178, 239, 178);
+}
 /*# sourceMappingURL=calendar.css.map */

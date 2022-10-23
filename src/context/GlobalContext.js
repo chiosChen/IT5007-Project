@@ -63,7 +63,10 @@ const GlobalContext = createContext({
 	synchronize: () => {},
 	getCriticalTasks: () => {},
 	calendarDate: "",
-	setCalendarDate: () => {}
+	setCalendarDate: () => {},
+	gapiurl: "",
+	setGapiurl: () => {},
+	getGapiUrl: () => {}
 });
 
 export default GlobalContext;

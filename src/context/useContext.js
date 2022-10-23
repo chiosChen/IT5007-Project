@@ -81,8 +81,7 @@ export default function useGlobalContext() {
 
 
 	// Events
-	const [events, setEvents] = useState([
-	]);
+	const [events, setEvents] = useState([]);
 
 	const getAllEvents = async () => {
 		try {
@@ -889,6 +888,30 @@ export default function useGlobalContext() {
 		}
 	}
 
+	const [gapiurl, setGapiurl] = useState("https://leetcode.com/problemset/all/");
+
+	const getGapiUrl = async () => {
+		try {
+			setIsLoading(true);
+			const res = await axiosIns.get(`/api/calendar/gapi`);
+			if (res.status === 200) {
+				setGapiurl(res.data.url);
+			}
+			setIsLoading(false);
+		} catch (error) {
+			setSnackMsg({
+				text: 'Opps, integration services temporarily down',
+				bgColor: 'var(--red)',
+				color: 'var(--white)'
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 2000);
+			setIsLoading(false);
+		}
+	}
+
 	// Synchronize
 	const synchronize = async () => {
 		getAllEvents();
@@ -1036,6 +1059,9 @@ export default function useGlobalContext() {
 		synchronize,
 		getCriticalTasks,
 		calendarDate,
-		setCalendarDate
+		setCalendarDate,
+		gapiurl,
+		setGapiurl,
+		getGapiUrl
 	};
 };

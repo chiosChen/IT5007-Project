@@ -8,10 +8,11 @@ import MonthDialogBox from "./MonthDialogBox";
 import GlobalContext from "../../context/GlobalContext";
 import { calendarImages } from "../../utils/images";
 import moment from "moment";
+import Button from "../../components/Button/Button";
 
 export default function Calendar() {
 
-	const { theme, events, getAllEvents, setCalendarDate } = useContext(GlobalContext);
+	const { theme, setCalendarDate, getGapiUrl, gapiurl } = useContext(GlobalContext);
 
 	const days = [
 		"Sunday",
@@ -135,26 +136,10 @@ export default function Calendar() {
 				today.getFullYear()
 			)
 		);
+		getGapiUrl();
 	}, []);
 
-	// useEffect(() => {
-	// 	getAllEvents();
-	// 	let allEvents = [...events];
-	// 	let newEvents = allEvents
-	// 		.map( e => ({
-	// 			...e,
-	// 			date: new Date(e.date),
-	// 		}))
-	// 	let set = new Set();
-	// 	for (let event of newEvents) {
-	// 		let presentDate = `${moment(event.date).format("YYYY-MM-DD")}`;
-	// 		if (!event.trashed) {
-	// 			set.add(presentDate);
-	// 		}
-	// 	}
-
-	// 	setEventDates(set);
-	// }, []);
+	
 
 	useEffect(() => {
 		setDatesToDisplay(handleDatesToDisplay(month, year));
@@ -214,6 +199,12 @@ export default function Calendar() {
 						/>
 					</div>
 				</div>
+				{gapiurl &&
+				<button
+					className="calendar-integrate-button"
+					onClick={() => {window.open(`${gapiurl}`, '_blank', "width=500,height=650,top=100,left=800,toolbar=no,menubar=no,location=no,status=no")}}
+				>Add a google calendar</button>
+				}
 				<div className="calendar-head-buttons">
 					
 					<IconButton
