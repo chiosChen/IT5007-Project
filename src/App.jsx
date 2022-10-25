@@ -31,6 +31,7 @@ import TasksTrash from "./pages/Tasks/TasksTrash";
 import Tasks from "./pages/Tasks/Tasks"
 import { useState } from "react";
 import moment from "moment";
+import NoticeBar from "./components/NoticeBar/NoticeBar";
 
 const Wrapper = () => {
 	AOS.init();
@@ -39,7 +40,6 @@ const Wrapper = () => {
 		openSideBar,
 		setOpenSideBar,
 		isLoading,
-		setIsLoading,
 		snackMsg,
 		setSnackMsg,
 		showSnackBar,
@@ -54,7 +54,13 @@ const Wrapper = () => {
 	} = useContext(GlobalContext);
 
 	const location = useLocation();
-	const [haveCriticalTasks, setHaveCriticalTasks] = useState(false);
+
+	const[noticeMsg, setNoticeMsg] = useState({
+		text: 'Notification Bar',
+		bgColor: 'var(--red)',
+		color: 'var(--white)'
+	});
+	const [showNoticeBar, setShowNoticeBar] = useState(false);
 
 	useEffect(() => {
 		setOpenSideBar(false);
@@ -99,7 +105,7 @@ const Wrapper = () => {
 		for (let t of times) {
 			if (t >= 900000) {
 				setTimeout(() => {
-					setSnackMsg({
+					setNoticeMsg({
 						text: `You have an event in 15 mins`,
 						bgColor: "var(--red)",
 						color: "var(--white)",
@@ -107,7 +113,7 @@ const Wrapper = () => {
 					setShowSnackBar(true);
 					setTimeout(() => {
 						setShowSnackBar(false);
-					}, 5000);
+					}, 300000);
 				}, t-900000);
 			}else {
 				setTimeout(() => {
@@ -119,7 +125,7 @@ const Wrapper = () => {
 					setShowSnackBar(true);
 					setTimeout(() => {
 						setShowSnackBar(false);
-					}, 5000);
+					}, 200000);
 				}, t-300000);
 			}
 			
@@ -163,13 +169,19 @@ const Wrapper = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect( () => {
-		if (getCriticalTasks() === true) setHaveCriticalTasks(true);
-	}, [])
-
-	
-
-	
+	// useEffect(() => {
+	// 	if (getCriticalTasks() === true) {
+	// 		setNoticeMsg({
+	// 			text: 'You have critical tasks',
+	// 			bgColor: 'var(--red)',
+	// 			color: 'var(--white)'
+	// 		});
+	// 		setShowNoticeBar(true);
+	// 		setTimeout(() => {
+	// 			setShowNoticeBar(false);
+	// 		}, 600000);
+	// 	}
+	// }, [])
 
 	return (
 		<>
@@ -234,32 +246,12 @@ const Wrapper = () => {
 					close={() => setShowSnackBar(false)}
 				/>
 			)}
-			{haveCriticalTasks && (
-				<Popup
-					width="50%"
-					height="fit-content"
-					breakpoints={{
-						tab: ["60%", "fit-content"],
-						mobile: ["90%", "fit-content"],
-					}}
-					cta={{
-						text: "OK",
-						color: "red",
-						onClick: () => {
-							setHaveCriticalTasks( e => !e );
-						},
-					}}
-					close={() => setHaveCriticalTasks(false)}
-				>
-					<span style={{ fontSize: "1.25rem", lineHeight: "2.5rem", textAlign: "center" }}>
-						{
-							<>
-								<h4>Your tasks are approaching deadlines</h4>
-							</>
-						}
-					</span>
-				</Popup>
-			)}
+			{showNoticeBar && <NoticeBar
+				text={noticeMsg.text}
+				bgColor={noticeMsg.bgColor}
+				color={noticeMsg.color}
+				close={() => setShowNoticeBar(false)}
+			/>}
 		</>
 	);
 };
