@@ -105,6 +105,7 @@ const Wrapper = () => {
 		for (let t of times) {
 			if (t >= 900000) {
 				setTimeout(() => {
+					setShowNoticeBar(false);
 					setNoticeMsg({
 						text: `You have an event in 15 mins`,
 						bgColor: "var(--red)",
@@ -114,6 +115,7 @@ const Wrapper = () => {
 				}, t-900000);
 			}else {
 				setTimeout(() => {
+					setShowNoticeBar(false);
 					setSnackMsg({
 						text: `You have an event in 5 mins`,
 						bgColor: "var(--red)",
@@ -165,6 +167,7 @@ const Wrapper = () => {
 
 	useEffect(() => {
 		if (getCriticalTasks() === true) {
+			setShowNoticeBar(false);
 			setNoticeMsg({
 				text: 'You have critical tasks',
 				bgColor: 'var(--red)',

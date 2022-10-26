@@ -6,6 +6,7 @@ import moment from "moment";
 
 // Custom hooks
 export default function useGlobalContext() {
+	
 	// Axios instance
 	const axiosIns = axios.create({
 		baseURL: process.env.REACT_APP_BACKEND_URL,
