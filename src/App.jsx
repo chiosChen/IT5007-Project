@@ -111,9 +111,6 @@ const Wrapper = () => {
 						color: "var(--white)",
 					});
 					setShowSnackBar(true);
-					setTimeout(() => {
-						setShowSnackBar(false);
-					}, 300000);
 				}, t-900000);
 			}else {
 				setTimeout(() => {
@@ -123,9 +120,6 @@ const Wrapper = () => {
 						color: "var(--white)",
 					});
 					setShowSnackBar(true);
-					setTimeout(() => {
-						setShowSnackBar(false);
-					}, 200000);
 				}, t-300000);
 			}
 			
@@ -169,19 +163,16 @@ const Wrapper = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// useEffect(() => {
-	// 	if (getCriticalTasks() === true) {
-	// 		setNoticeMsg({
-	// 			text: 'You have critical tasks',
-	// 			bgColor: 'var(--red)',
-	// 			color: 'var(--white)'
-	// 		});
-	// 		setShowNoticeBar(true);
-	// 		setTimeout(() => {
-	// 			setShowNoticeBar(false);
-	// 		}, 600000);
-	// 	}
-	// }, [])
+	useEffect(() => {
+		if (getCriticalTasks() === true) {
+			setNoticeMsg({
+				text: 'You have critical tasks',
+				bgColor: 'var(--red)',
+				color: 'var(--white)'
+			});
+			setShowNoticeBar(true);
+		}
+	}, [])
 
 	return (
 		<>
