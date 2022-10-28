@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import "./style.css";
 import { useLocation, Route, Routes } from "react-router-dom";
-import { Popup } from "./layout/Popup/Popup";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Header from "./components/Header/Header";

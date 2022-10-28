@@ -9,7 +9,7 @@ import { registerBg, welcome } from "../../utils/images";
 import "./register.css";
 
 export default function Register() {
-	const { setSnackMsg, setShowSnackBar, setIsLoading, axiosIns } = useContext(GlobalContext);
+	const { setSnackMsg, setShowSnackBar, setIsLoading, graphQLFetch } = useContext(GlobalContext);
 	const navigate = useNavigate();
 	const [registerUser, setRegisterUser] = useState({
 		fname: "",
@@ -40,34 +40,35 @@ export default function Register() {
 				setShowSnackBar(false);
 			}, 3000);
 		} else {
-			try {
 				setIsLoading(true);
-				const res = await axiosIns.post("/api/auth/register", {...registerUser});
-				if (res.status === 200) {
-					setSnackMsg({
-						text: res?.data.message,
-						bgColor: "var(--green)",
-						color: "var(--white)",
-					});
-					setShowSnackBar(true);
-					setTimeout(() => {
-						setShowSnackBar(false);
-					}, 3000);
-					setIsLoading(false);
-					navigate("/profile");
+				const query = '';
+				const res = await graphQLFetch(query, {registerUser});
+				if (res) {
+					if (res.error) {
+						setSnackMsg({
+							text: res.error.message,
+							bgColor: "var(--red)",
+							color: "var(--white)",
+						});
+						setShowSnackBar(true);
+						setTimeout(() => {
+							setShowSnackBar(false);
+						}, 3000);
+						setIsLoading(false);
+					}else {
+						setSnackMsg({
+							text: res?.data.message,
+							bgColor: "var(--green)",
+							color: "var(--white)",
+						});
+						setShowSnackBar(true);
+						setTimeout(() => {
+							setShowSnackBar(false);
+						}, 3000);
+						setIsLoading(false);
+						navigate("/profile");
+					}
 				}
-			} catch (error) {
-				setSnackMsg({
-					text: error?.response?.data?.message,
-					bgColor: "var(--red)",
-					color: "var(--white)",
-				});
-				setShowSnackBar(true);
-				setTimeout(() => {
-					setShowSnackBar(false);
-				}, 3000);
-				setIsLoading(false);
-			}
 		}
 	};
 	return (

@@ -1192,6 +1192,7 @@ export default function useGlobalContext() {
 		setCalendarDate,
 		gapiurl,
 		setGapiurl,
-		getGapiUrl
+		getGapiUrl,
+		graphQLFetch
 	};
 };

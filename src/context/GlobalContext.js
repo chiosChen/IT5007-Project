@@ -65,7 +65,8 @@ const GlobalContext = createContext({
 	setCalendarDate: () => {},
 	gapiurl: "",
 	setGapiurl: () => {},
-	getGapiUrl: () => {}
+	getGapiUrl: () => {},
+	graphQLFetch: undefined
 });
 
 export default GlobalContext;

@@ -14,7 +14,7 @@ export default function Profile() {
 	const {
 		user,
 		setIsLoading,
-		axiosIns,
+		graphQLFetch,
 		updateUser,
 		setSnackMsg,
 		setShowSnackBar,
@@ -48,10 +48,21 @@ export default function Profile() {
 		for (let i in profileUser)
 			if (profileUser[i] !== user[i])
 				editedUser = { ...editedUser, [i]: profileUser[i] };
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put("/api/auth/edit", {...editedUser});
-			if (res.status === 200) {
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {editedUser});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: "var(--red)",
+					color: "var(--white)",
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
 				setSnackMsg({
 					text: res.data.message,
 					bgColor: "var(--green)",
@@ -64,30 +75,11 @@ export default function Profile() {
 				updateUser({ ...res.data.user });
 				setProfileUser({ ...profileUser, ...res.data.user });
 				setUserImage(res.data.user?.avatar);
-			} else {
-				setSnackMsg({
-					text: res.data.message,
-					bgColor: "var(--yellow)",
-					color: "var(--white)",
-				});
-				setShowSnackBar(true);
-				setTimeout(() => {
-					setShowSnackBar(false);
-				}, 3000);
 			}
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error?.response?.data?.message,
-				bgColor: "var(--red)",
-				color: "var(--white)",
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
 		}
+		
+		setIsLoading(false);
+		
 	};
 	return (
 		<>

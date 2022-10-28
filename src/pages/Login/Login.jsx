@@ -14,7 +14,7 @@ export default function Login() {
 		isAuthenticated,
 		setIsAuthenticated,
 		updateUser,
-		axiosIns,
+		graphQLFetch,
 		setIsLoading,
 		setSnackMsg,
 		setShowSnackBar,
@@ -34,11 +34,22 @@ export default function Login() {
 	};
 	const handleSubmit = async e => {
 		e?.preventDefault();
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.post("/api/auth/login", {...userInfo});
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {userInfo});
 
-			if (res.status === 200) {
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: "var(--red)",
+					color: "var(--white)",
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
 				setSnackMsg({
 					text: res?.data.message,
 					bgColor: "var(--green)",
@@ -54,20 +65,11 @@ export default function Login() {
 				localStorage.setItem("token", res.data.token);
 				localStorage.setItem("isAuthenticated", true);
 				updateUser({ ...res.data.user });
-				setIsLoading(false);
 			}
-		} catch (error) {
-			setSnackMsg({
-				text: error?.response?.data?.message,
-				bgColor: "var(--red)",
-				color: "var(--white)",
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
 		}
+			
+		setIsLoading(false);
+
 	};
 
 	useEffect(() => {
