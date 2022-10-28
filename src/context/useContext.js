@@ -18,6 +18,32 @@ export default function useGlobalContext() {
 
 	
 
+	const graphQLFetch = async (query, variables = {}) => {
+		try {
+			const rep = await fetch('/graphql', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({ query, variables })
+			});
+			const data = await rep.text();
+			const res = JSON.parse(data, (k, v) => v);
+			return res;
+		} catch (error) {
+			//console.log(error);
+			setSnackMsg({
+				text: 'Server Error',
+				bgColor: 'var(--red)',
+				color: 'var(--white)'
+			});
+			setShowSnackBar(true);
+			setTimeout(() => {
+				setShowSnackBar(false);
+			}, 3000);
+		}
+	}
+
+	
+
 	// Network Status
 	const [networkStatus, setNetworkStatus] = useState("offline");
 
@@ -54,30 +80,36 @@ export default function useGlobalContext() {
 
 	// Verify User
 	const verifyUser = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get('/api/auth'); //API
-			let info = res.data.user;
-			setUser(info);
-			localStorage.setItem('user', JSON.stringify(info));
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-			localStorage.removeItem('token');
-			localStorage.removeItem('user');
-			localStorage.setItem('isAuthenticated', false);
-			setUser(null);
-			setIsAuthenticated(false);
+	
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {user}); //API
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+				setIsLoading(false);
+				localStorage.removeItem('token');
+				localStorage.removeItem('user');
+				localStorage.setItem('isAuthenticated', false);
+				setUser(null);
+				setIsAuthenticated(false);
+			}else {
+				let info = res.data.user;
+				setUser(info);
+				localStorage.setItem('user', JSON.stringify(info));
+				setIsLoading(false);
+			}
+			
 		}
+		
 	}
 
 
@@ -85,33 +117,128 @@ export default function useGlobalContext() {
 	const [events, setEvents] = useState([]);
 
 	const getAllEvents = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get("/api/events"); //API
-			setEvents( res.data.allEvents );
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {user});//API
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setEvents( res.data.allEvents );
+			}
 		}
+		setIsLoading(false);
+			
+		
 	}
 
-	
 	const addOneEvent = async event => {
-		try {
 			setIsLoading(true);
-			const res = await axiosIns.post("/api/events/add", {...event});//API
-			if (res.status === 200) {
-				setEvents((prev) => {
-					return [...prev, res.data.newEvent];
+			event.user = user._id;
+			const query = '';
+			const res = await graphQLFetch(query, {event});//API
+			if (res) {
+				if (res.error) {
+					setSnackMsg({
+						text: res.error.response?.data?.message,
+						bgColor: 'var(--red)',
+						color: 'var(--white)',
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 3000);
+				}else {
+					setEvents((prev) => {
+						return [...prev, res.data.newEvent];
+					});
+					setSnackMsg({
+						text: res.data.message,
+						bgColor: 'var(--green)',
+						color: 'var(--white)'
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 3000);
+				}
+			}
+			setIsLoading(false);
+	};
+
+	const updateOneEvent = async (eid, updatedEvent) => {
+			setIsLoading(true);
+			const query = '';
+			updatedEvent.user = user._id;
+			const res = await graphQLFetch(query, {updatedEvent, eid});//API
+			if (res) {
+				if (res.error) {
+					setSnackMsg({
+						text: res.error.message,
+						bgColor: 'var(--red)',
+						color: 'var(--white)'
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 3000);
+				}else {
+					setEvents( prev => {
+						let newEvents = prev.map( e =>
+							e._id !== eid
+								? e
+								: res.data.updatedEvent
+						);
+						return newEvents;
+					});
+					setSnackMsg({
+						text: res.data.message,
+						bgColor: 'var(--green)',
+						color: 'var(--white)'
+					});
+					setShowSnackBar(true);
+					setTimeout(() => {
+						setShowSnackBar(false);
+					}, 3000);
+				}
+			}
+			
+			setIsLoading(false);
+		
+	};
+
+	const moveOneEventToBin = async eid => {
+		setIsLoading(true);
+		const query = '';
+		let event = {eid: eid, uid: user._id}
+		const res = await graphQLFetch(query, {event});//API
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setEvents( prev => {
+					let newEvents = prev.map( e =>
+						e._id !== eid
+							? e
+							: res.data.updatedEvent
+					);
+					return newEvents;
 				});
 				setSnackMsg({
 					text: res.data.message,
@@ -122,157 +249,85 @@ export default function useGlobalContext() {
 				setTimeout(() => {
 					setShowSnackBar(false);
 				}, 3000);
-				setIsLoading(false);
 			}
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)',
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
 		}
+		setIsLoading(false);
+
 	};
 
-	const updateOneEvent = async (eid, updatedEvent) => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/events/update/${eid}`, {...updatedEvent});//API
-			setEvents( prev => {
-				let newEvents = prev.map( e =>
-					e._id !== eid
-						? e
-						: res.data.updatedEvent
-				);
-				return newEvents;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+	const recycleOneEvent = async eid => {
+		setIsLoading(true);
+		const query = '';
+		let event = {eid: eid, uid: user._id}
+		const res = await graphQLFetch(query, {event});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setEvents((prev) => {
+					let newEvents = prev.map( e =>
+						e._id !== eid
+							? e
+							: res.data.updatedEvent
+					);
+					return newEvents;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+			
+		setIsLoading(false);
+
 	};
 
-	const moveOneEventToBin = async eid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/events/trash/${eid}`);//API
-			setEvents( prev => {
-				let newEvents = prev.map( e =>
-					e._id !== eid
-						? e
-						: res.data.updatedEvent
-				);
-				return newEvents;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+	const deleteOneEvent = async eid => {
+		setIsLoading(true);
+		const query = '';
+		let event = {eid: eid, uid: user._id}
+		const res = await graphQLFetch(query, {event});
+		getAllEvents();
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text:res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
-	};
 
-	const recycleOneEvent = async (eid) => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/events/recycle/${eid}`);
-			setEvents((prev) => {
-				let newEvents = prev.map( e =>
-					e._id !== eid
-						? e
-						: res.data.updatedEvent
-				);
-				return newEvents;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		}
-	};
+		setIsLoading(false);
 
-	const deleteOneEvent = async (eid) => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.delete(`/api/events/delete/${eid}`);
-			getAllEvents();
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		}
 	};
 
 	// Notes
@@ -280,98 +335,123 @@ export default function useGlobalContext() {
 	const [notes, setNotes] = useState([]);
 
 	const pinNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/pin/${nid}`);
-			setNotes( prev => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)',
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id};
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+		
 	};
 
-	const unPinNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/unpin/${nid}`);
-			setNotes( prev => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)',
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+	const unpinNote = async nid => {
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id};
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+		
 	};
 
 	const getAllNotes = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get("/api/notes");
-			setNotes(res.data.allNotes);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {user});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes(res.data.allNotes);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const addOneNote = async newNote => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.post("/api/notes/add", {...newNote});
-			if (res.status === 200) {
+		setIsLoading(true);
+		const query = '';
+		newNote.user = user._id;
+		const res = await graphQLFetch(query, {newNote});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
 				setSnackMsg({
 					text: res.data.message,
 					bgColor: 'var(--green)',
@@ -382,219 +462,238 @@ export default function useGlobalContext() {
 				setTimeout(() => {
 					setShowSnackBar(false);
 				}, 3000);
-				setIsLoading(false);
 			}
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+			
+			
 		}
+		setIsLoading(false);
+
 	};
 
 	const updateOneNote = async (nid, updatedNote) => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/update/${nid}`, {...updatedNote});
-			setNotes((prev) => {
-				let newNotes = prev.map( e =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		updatedNote.user = user._id;
+		const res = await graphQLFetch(query, {updatedNote, nid});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes((prev) => {
+					let newNotes = prev.map( e =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	const archiveOneNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/archive/${nid}`);
-			setNotes( prev => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)',
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id}
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const unArchiveOneNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/unarchive/${nid}`);
-			setNotes((prev) => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id}
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const moveOneNoteToBin = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/trash/${nid}`);
-			setNotes((prev) => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id}
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const recycleOneNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/notes/recycle/${nid}`);
-			setNotes((prev) => {
-				let newNotes = prev.map((e) =>
-					e._id !== nid ? e : res.data.updatedNote
-				);
-				return newNotes;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id}
+		const res = await graphQLFetch(query, {note});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)',
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setNotes( prev => {
+					let newNotes = prev.map((e) =>
+						e._id !== nid ? e : res.data.updatedNote
+					);
+					return newNotes;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const deleteOneNote = async nid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.delete(`/api/notes/delete/${nid}`);
-			getAllNotes();
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+	
+		setIsLoading(true);
+		const query = '';
+		let note = {nid: nid, uid: user._id}
+		const res = await graphQLFetch(query, {note});
+		getAllNotes();
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	// Tasks
@@ -602,30 +701,47 @@ export default function useGlobalContext() {
 	const [tasks, setTasks] = useState([]);
 
 	const getAllTasks = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get("/api/tasks");
-			setTasks(res.data.allTasks);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {user});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks(res.data.allTasks);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	const addOneTask = async newTask => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.post("/api/tasks/add", {...newTask});
-			if (res.status === 200) {
+		setIsLoading(true);
+		const query = '';
+		newTask.user = user._id;
+		const res = await graphQLFetch(query, {newTask});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
 				setSnackMsg({
 					text: res.data.message,
 					bgColor: 'var(--green)',
@@ -637,257 +753,268 @@ export default function useGlobalContext() {
 					setShowSnackBar(false);
 				}, 3000);
 			}
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+			
 		}
+		setIsLoading(false);
+
 	};
 
 	const updateOneTask = async (tid, updatedTask) => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/tasks/update/${tid}`, {...updatedTask});
-			setTasks( prev => {
-				let newTasks = prev.map((e) =>
-					e._id !== tid ? e : res.data.updatedTask
-				);
-				return newTasks;
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+
+		setIsLoading(true);
+		const query = '';
+		updatedTask.user = user._id;
+		const res = await graphQLFetch(query, {updatedTask, tid});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks( prev => {
+					let newTasks = prev.map((e) =>
+						e._id !== tid ? e : res.data.updatedTask
+					);
+					return newTasks;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	const markTaskAsDone = async tid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/tasks/mark-as-done/${tid}`);
-			setTasks((prev) => {
-				let newTasks = prev.map( e =>
-					e._id !== tid ? e : res.data.updatedTask
-				);
-				return newTasks;
-			});
-			setSnackMsg({
-				text: res?.data?.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let task = {tid: tid, uid: user._id};
+		const res = await graphQLFetch(query, {task});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks( prev => {
+					let newTasks = prev.map((e) =>
+						e._id !== tid ? e : res.data.updatedTask
+					);
+					return newTasks;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const markTaskAsNotDone = async tid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/tasks/mark-as-not-done/${tid}`);
-			setTasks( prev => {
-				let newTasks = prev.map( e =>
-					e._id !== tid ? e : res.data.updatedTask
-				);
-				return newTasks;
-			});
-			setSnackMsg({
-				text: res?.data?.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let task = {tid: tid, uid: user._id};
+		const res = await graphQLFetch(query, {task});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks( prev => {
+					let newTasks = prev.map((e) =>
+						e._id !== tid ? e : res.data.updatedTask
+					);
+					return newTasks;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const moveOneTaskToBin = async tid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/tasks/trash/${tid}`);
-			setTasks( prev => {
-				let newTasks = prev.map( e =>
-					e._id !== tid ? e : res.data.updatedTask
-				);
-				return newTasks;
-			});
-			setSnackMsg({
-				text: res?.data?.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let task = {tid: tid, uid: user._id};
+		const res = await graphQLFetch(query, {task});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks( prev => {
+					let newTasks = prev.map((e) =>
+						e._id !== tid ? e : res.data.updatedTask
+					);
+					return newTasks;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const recycleOneTask = async tid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/tasks/recycle/${tid}`);
-			setTasks( prev => {
-				let newTasks = prev.map( e =>
-					e._id !== tid ? e : res.data.updatedTask
-				);
-				return newTasks;
-			});
-			setSnackMsg({
-				text: res?.data?.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let task = {tid: tid, uid: user._id};
+		const res = await graphQLFetch(query, {task});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setTasks( prev => {
+					let newTasks = prev.map((e) =>
+						e._id !== tid ? e : res.data.updatedTask
+					);
+					return newTasks;
+				});
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
 	};
 
 	const deleteOneTask = async tid => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.delete(`/api/tasks/delete/${tid}`);
-			getAllTasks();
-			setSnackMsg({
-				text: res?.data?.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+		setIsLoading(true);
+		const query = '';
+		let task = {tid: tid, uid: user._id}
+		const res = await graphQLFetch(query, {task});
+		getAllTasks();
+		if (res) {
+			if (res.error){
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setSnackMsg({
+					text: res?.data?.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	// Settings
 	const getSettings = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get(`/api/settings`);
-			if (res.status === 200) {
+
+		setIsLoading(true);
+		const query = '';
+		const res = await graphQLFetch(query, {user});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
 				setAccentColor(res.data.accentColor);
 				document
 					.querySelector('body')
 					.style.setProperty('--accent-color', res.data.accentColor);
 				localStorage.setItem("accentColor", res.data.accentColor);
 			}
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+			
 		}
+		setIsLoading(false);
+		
 	};
 
-	const getCriticalTasks = async () => {
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.get(`/api/tasks/criticalTasks`);
-			setIsLoading(false);
-			return res.data.message === "true" ? true : false ;
-		} catch (error) {
-			setIsLoading(false);
-			return false;
-		}
-	}
 
 	const [gapiurl, setGapiurl] = useState("d");
 
@@ -945,39 +1072,42 @@ export default function useGlobalContext() {
 	// Manage Features
 	const [accentColor, setAccentColor] = useState(localStorage.getItem("accentColor") || "indigo");
 	
-	const updateAccentColor = async color => {
-		setAccentColor(color);
+	const updateAccentColor = async c => {
+		setAccentColor(c);
 		document
 			.querySelector("body")
-			.style.setProperty("--accent-color", color);
-		localStorage.setItem("accentColor", color);
-		try {
-			setIsLoading(true);
-			const res = await axiosIns.put(`/api/settings/update`, {
-				accentColor: color,
-			});
-			setSnackMsg({
-				text: res.data.message,
-				bgColor: 'var(--green)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
-		} catch (error) {
-			setSnackMsg({
-				text: error.response?.data?.message,
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowSnackBar(true);
-			setTimeout(() => {
-				setShowSnackBar(false);
-			}, 3000);
-			setIsLoading(false);
+			.style.setProperty("--accent-color", c);
+		localStorage.setItem("accentColor", c);
+		setIsLoading(true);
+		const query = '';
+		let color = {color: c, uid: user._id}
+		const res = await graphQLFetch(query, {color});
+		if (res) {
+			if (res.error) {
+				setSnackMsg({
+					text: res.error.message,
+					bgColor: 'var(--red)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}else {
+				setSnackMsg({
+					text: res.data.message,
+					bgColor: 'var(--green)',
+					color: 'var(--white)'
+				});
+				setShowSnackBar(true);
+				setTimeout(() => {
+					setShowSnackBar(false);
+				}, 3000);
+			}
 		}
+		
+		setIsLoading(false);
+
 	};
 
 	// Media Breakpoints to distinguish devices
@@ -1044,7 +1174,7 @@ export default function useGlobalContext() {
 		recycleOneNote,
 		deleteOneNote,
 		pinNote,
-		unPinNote,
+		unpinNote,
 		//Tasks
 		tasks,
 		setTasks,
@@ -1058,7 +1188,6 @@ export default function useGlobalContext() {
 		deleteOneTask,
 		getSettings,
 		synchronize,
-		getCriticalTasks,
 		calendarDate,
 		setCalendarDate,
 		gapiurl,

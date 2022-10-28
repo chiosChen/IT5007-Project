@@ -88,7 +88,7 @@ const Wrapper = () => {
 			});
 		}
 	});
-
+	
 	useEffect(() => {
 		let allEvents = [...events];
 		let times = [];
@@ -165,17 +165,17 @@ const Wrapper = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect(() => {
-		if (getCriticalTasks() === true) {
-			setShowNoticeBar(false);
-			setNoticeMsg({
-				text: 'You have critical tasks',
-				bgColor: 'var(--red)',
-				color: 'var(--white)'
-			});
-			setShowNoticeBar(true);
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if (getCriticalTasks() === true) {
+	// 		setShowNoticeBar(false);
+	// 		setNoticeMsg({
+	// 			text: 'You have critical tasks',
+	// 			bgColor: 'var(--red)',
+	// 			color: 'var(--white)'
+	// 		});
+	// 		setShowNoticeBar(true);
+	// 	}
+	// }, [])
 
 	return (
 		<>
