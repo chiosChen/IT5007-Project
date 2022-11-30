@@ -1,0 +1,190 @@
+
+enum BgcolorType {
+  white
+  red
+  bgcolor
+}
+
+enum imageType {
+  noimage
+
+}
+
+enum ColorType{
+  indigo
+	blue
+	red
+	green
+	pink
+	brown
+	orange
+
+}
+
+type Setting{
+  _id: ID!
+  userEmail: String!
+  accentColor: String
+
+}
+
+
+type Note {
+  _id: ID!
+  title: String!
+  content: String
+  "should be Int?"
+  image: imageType
+  color: BgcolorType = bgcolor
+  archived: Boolean
+  trashed: Boolean
+  pinned: Boolean
+  createDate: GraphQLDate
+}
+
+
+type Task {
+  _id: ID!
+  title: String!
+  description: String
+  date: GraphQLDate
+  color: BgcolorType
+  done: Boolean
+  trashed: Boolean
+}
+
+type User{
+    _id: ID!
+    fname: String!
+    lname: String!
+    email: String!
+    username: String!
+    password: String!
+    salt: String
+    token: String
+    avatar: String
+    createDate: GraphQLDate
+}
+
+input UserInputs {
+    fname: String!
+    lname: String!
+    email: String!
+    username: String!
+    password: String!
+    salt: String
+    token: String
+    avatar: String
+    createDate: GraphQLDate
+}
+
+input registerUserInputs {
+    fname: String!
+    lname: String!
+    email: String!
+    username: String!
+    password: String!
+    confirmPassword:String!
+    avatar: String
+}
+
+
+input EventInputs {
+  title: String!
+  description: String
+  date: GraphQLDate
+  time: String
+  type: StatusType!
+  link: String
+}
+
+input NoteInputs {
+  title: String!
+  content: String
+  image: imageType
+  color: BgcolorType = bgcolor
+  pinned: Boolean
+}
+
+
+input TaskInputs {
+  title: String!
+  description: String
+  color: BgcolorType
+}
+
+type Message{
+  valid: Int!
+  msg: String
+}
+
+
+
+
+type Query {
+  "Calendar"
+  "TODO: what to return "
+  getGapiUrl: Boolean
+
+  #Setting
+  getSettings: Setting!
+
+  "User"
+  verifyUser: Boolean!
+
+  "Event"
+  getAllEvents: [Event!]!
+  
+  "Note"
+  getAllNotes:[Note!]!
+
+  "Task"
+  getAllTasks: [Task!]!
+  getCriticalTasks: [Task!]!
+
+}
+
+
+
+type Mutation {
+  "User"
+  register(registerUser: registerUserInputs!): Message
+  "TODO input"
+  " {userInfo: username, password}"
+  login(userInfo: String!): Message
+  "TODO input"
+  editProfile(editedUser:UserInputs!): Message
+
+  "Event"
+  addOneEvent(event:EventInputs!): Message
+  updateOneEvent(eid: ID!, updatedEvent: EventInputs): Message
+  moveOneEventToBin(eid: ID!): Message
+  recycleOneEvent(eid: ID!): Message
+  deleteOneEvent(eid: ID!): Message
+
+  "Note"
+  pinNote(nid: ID!): Message
+  unPinNote(nid: ID!): Message
+  addOneNote(newNote: NoteInputs!): Message
+  updateOneNote(nid: ID!, updatedNote: EventInputs): Message
+  archiveOneNote(nid: ID!): Message
+  unArchiveOneNote(nid: ID!): Message
+  moveOneNoteToBin(nid: ID!): Message
+  recycleOneNote(nid: ID!): Message
+  deleteOneNote(nid: ID!): Message
+
+  "Task"
+  addOneTask(newTask:TaskInputs!): Message
+  updateOneTask(tid: ID!, updatedTask:TaskInputs!): Message
+  markTaskAsDone(tid: ID!): Message
+  markTaskAsNotDone(tid: ID!): Message
+  moveOneTaskToBin(tid: ID!): Message
+  recycleOneTask(tid: ID!): Message
+  deleteOneTask(tid: ID!): Message
+
+
+  "Setting"
+  updateAccentColor(color: ColorType!): Message
+
+}
+

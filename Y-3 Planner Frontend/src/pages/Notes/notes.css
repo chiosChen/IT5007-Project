@@ -1,0 +1,141 @@
+.notes {
+  margin: 0 auto;
+  margin-top: var(--head-height);
+  width: 99%;
+  min-height: calc(100vh - var(--head-height));
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-flow: column;
+  font-family: "Chococooky", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.notes-body {
+  width: 100%;
+}
+
+.note {
+  width: 95%;
+  margin: 0.75rem;
+  border: 1px solid var(--back-shadow-light);
+  border-radius: 20px;
+  padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: lighten;
+}
+.note:hover {
+  border-radius: 12px;
+  box-shadow: var(--shadow-elevation-2dp);
+}
+.note-title {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin: 0 0 0.5rem 0;
+  overflow: auto;
+}
+.note-content {
+  width: 100%;
+  max-height: 10rem;
+  overflow: auto;
+  word-wrap: break-word;
+}
+.note-buttons {
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.note-button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0.5rem 0 0;
+  border-radius: 500px;
+  opacity: 0;
+}
+@media (max-width: 672px) {
+  .note-button {
+    opacity: 1;
+  }
+}
+.note-button:hover {
+  background-color: var(--back-shadow-light);
+}
+.note-button .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+.note:hover .note-button {
+  opacity: 1;
+}
+
+.add-note-form {
+  width: 90%;
+  margin: 2rem auto;
+}
+.add-note-form textarea {
+  height: 50vh;
+}
+.add-note-form .form-group {
+  width: 100%;
+  margin: 1rem auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add-note-form .form-group [name=title] {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.add-note-form .form-group [name=content] {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.add-note-form-group {
+  position: relative;
+  margin: 0 1rem;
+}
+.add-note-cover {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 15;
+}
+.add-note-color-box, .add-note-image-box {
+  position: absolute;
+  bottom: 3rem;
+  left: 1rem;
+  width: 15rem;
+  background-color: var(--bgcolor);
+  box-shadow: var(--shadow-elevation-2dp);
+  border-radius: 8px;
+  z-index: 16;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.add-note-color-box::-webkit-scrollbar, .add-note-image-box::-webkit-scrollbar {
+  width: 1px;
+  background-color: transparent;
+}
+.add-note-color-box::-webkit-scrollbar-track, .add-note-image-box::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.add-note-color-box::-webkit-scrollbar-thumb, .add-note-image-box::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 500px;
+}
+.add-note-color-box::-webkit-scrollbar-thumb:hover, .add-note-image-box::-webkit-scrollbar-thumb:hover {
+  background-color: transparent;
+}
+.add-note-color-box::-webkit-scrollbar-thumb:hover, .add-note-image-box::-webkit-scrollbar-thumb:hover {
+  background-color: transparent;
+}
+
+/*# sourceMappingURL=notes.css.map */

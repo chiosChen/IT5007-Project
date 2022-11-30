@@ -1,0 +1,25 @@
+[
+    {
+        "name": "Chios Chen",
+        "image": "https://avatars.githubusercontent.com/u/113034565?v=4",
+        "about": "Full-time Student",
+        "socials": [
+            {
+                "username": "@chiosChen",
+                "link": "https://github.com/chiosChen",
+                "service": "github"
+            },
+            {
+                "username": "+65 80481862",
+                "link": "tel:6580481862",
+                "service": "phone"
+            },
+            {
+                "username": "e0925491@u.nus.edu",
+                "link": "mailto:e0925491@u.nus.edu",
+                "service": "mail"
+            }
+        ],
+        "color": "purple"
+    }
+]

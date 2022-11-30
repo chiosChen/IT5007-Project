@@ -1,0 +1,183 @@
+scalar GraphQLDate
+
+enum StatusType {
+  Appointment
+  Party
+  Meeting
+  Festival
+  Birthday
+  Dating
+  Other
+}
+
+type User{
+    _id: ID!
+    fname: String!
+    lname: String!
+    email: String!
+    username: String!
+    password: String!
+    phone: String
+    salt: String
+    bio: String
+    avatar: String
+    createDate: String
+}
+
+type Setting{
+    _id: ID!
+    user: String
+    accentColor: String
+    trashDuration: Int
+}
+
+type Event {
+  _id: ID!
+  user: String!
+  title: String!
+  description: String!
+  date: String!
+  time: String!
+  type: StatusType!
+  link: String!
+  trashed: Boolean!
+}
+type Note {
+  _id: ID!
+  user: String!
+  title: String!
+  content: String!
+  image: Int!
+  color: String!
+  archived: Boolean!
+  trashed: Boolean!
+  pinned: Boolean!
+}
+
+type Task {
+  _id: ID!
+  user: String!
+  title: String!
+  description: String!
+  date: String!
+  color: String!
+  done: Boolean!
+  trashed: Boolean!
+}
+
+input inputEvent {
+  user: String!
+  title: String!
+  description: String!
+  date: String!
+  time: String!
+  type: StatusType!
+  link: String!
+  trashed: Boolean!
+}
+input inputNote {
+  user: String!
+  title: String!
+  content: String!
+  image: Int!
+  color: String!
+  archived: Boolean!
+  trashed: Boolean!
+  pinned: Boolean!
+}
+input inputTask {
+  user: String!
+  title: String!
+  description: String!
+  date: String!
+  color: String!
+  done: Boolean!
+  trashed: Boolean!
+}
+
+input updatedEvent {
+  title: String
+  description: String
+  date: String
+  type: StatusType
+  trashed: Boolean
+}
+
+input updatedNote {
+  title: String
+  content: String
+  image: Int
+  color: String
+  archived: Boolean
+  trashed: Boolean
+  pinned: Boolean
+}
+input updatedTask {
+  user: String
+  title: String
+  description: String
+  date: String
+  color: String
+  done: Boolean
+  trashed: Boolean
+}
+
+input registerUserInputs {
+    fname: String!
+    lname: String!
+    email: String!
+    username: String!
+    password: String!
+    confirmPassword:String!
+    avatar: String
+}
+
+input userInfoInputs{
+    username: String!
+    password: String!
+}
+
+
+type Result{
+    _id: ID
+    fname: String
+    lname: String
+    email: String
+    username: String
+    bio: String
+    avatar: String
+    phone: String
+    createDate: String
+    message: String
+}
+
+type Query {
+  getAllEvents(user:String!): [Event!]!
+  getAllNotes(user:String!): [Note!]!
+  getAllTasks(user:String!): [Task!]!
+
+
+}
+
+type Mutation {
+  register(registerUser: registerUserInputs!): Result!
+  login(userInfo: userInfoInputs!): Result!
+  verifyUser(username: String!): Result!
+  
+
+  addOneEvent(event: inputEvent!): Event!
+  updateOneEvent(event: updatedEvent!, eid: String!): Event!
+  deleteOneEvent(eid: String!): Boolean!
+  addOneNote(note: inputNote!): Note!
+  updateOneNote(note: updatedNote!, nid: String!): Note!
+  deleteOneNote(nid: String!): Boolean!
+  addOneTask(task: inputTask!): Task!
+  updateOneTask(task: updatedTask!, tid: String!): Task!
+  deleteOneTask(tid: String!): Boolean!
+}
+
+
+
+
+
+
